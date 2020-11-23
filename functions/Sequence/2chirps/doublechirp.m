@@ -1,0 +1,204 @@
+function seq = doublechirp(param)
+% Creates a double chirp pulse sequence for excitation
+% (Kunz scheme, Bohlen-Bodenhausen scheme)
+% 
+% Input:
+%   - param, structure containing the parameters allowing to defined the
+%   sequence
+%
+% Output:
+%   - seq, structure containing the sequence information
+%
+% Required fields for param:
+%   - bw, target bandwidth of the pulse sequence (Hz)
+%   - tres, time resolution of the pulse sequence (s)
+%   - one of the following:
+%       - w1max, maximum amplitude of the excitation field B1
+%       - t90min, minimum pulse duration for a 90 degree pulse(s)
+%       - t180min, minimum pulse duration for a 180 degree pulse (s)
+%
+% Optional fields for parma:
+%   - TBPmin, minimum time bandwidth product if w1max is used
+%   - Q90 and Q180, adiabaticity factors of the 90 degree and 180
+%   degrees pulses respectively   
+%   - pulse_param, structure containing desired LinearChirp parameters
+%   - display_result, boolean which allows to display the sequence and the 
+%   results of simulation/calculation (set to false by default)
+%
+% Fields contained in seq:
+%   - all the fields mentionned above (with input/default values)
+%   - tau, vector containing the duration of the pulses and delays in
+%   order (s)
+%   - pulses, cell array containing the pulse structures (LinearChirp)
+%   - total_time, total time of the pulse sequence (s)
+
+
+grumble(param)
+
+% default values for optional parameters
+if ~isfield(param, 'Q90')
+    param.Q90 = (2 / pi) * log(2 / (cosd(90) + 1));
+end
+
+if ~isfield(param, 'Q180')
+    param.Q180 = 5;
+end
+
+if isfield(param, 'w1max') && ~isfield(param, 'TBPmin')
+    param.TBPmin = 100;
+end
+
+if ~isfield(param, 'display_result')
+    param.display_result = false;
+end
+
+if isfield(param, 'pulse_param')
+    pulse_param = param.pulse_param;
+end
+
+% common parameters for each pulse
+pulse_param.bw = param.bw;
+pulse_param.tres = param.tres;
+
+% values for sequence required paramters
+if isfield(param, 'w1max')
+    t90min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
+                                 param.Q90, param.bw);
+    t180min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
+                                  param.Q180, param.bw);
+elseif isfield(param, 't90min')
+    t90min = param.t90min;
+    t180min = 0;
+elseif isfield(param, 't180min')
+    t180min = param.t180min;
+    t90min = 0;
+end
+
+% rounding the pulse duration values
+rounding_power = ceil(log10(param.tres));
+t90min = 10^rounding_power * ceil(10^(-rounding_power) * t90min);
+t180min = 10^rounding_power * ceil(10^(-rounding_power) * t180min);
+
+% defining the sequence with the most critical pulse
+if t90min > 2*t180min
+    disp("pi/2 defined") % high RF power and high TBPmin
+    tau = [t90min 0.5*t90min 0.5*t90min];
+    param.TBPmin = t90min * param.bw;
+else    
+    disp("pi defined")
+    tau = [t180min*2 t180min t180min];
+    param.TBPmin = t180min * param.bw;
+end
+
+% pulse 1: pi/2 pulse
+pulse_param.tp = tau(1);
+pulse_param.delta_t = tau(1)/2;
+pulse_param.Q = param.Q90;
+p1 = LinearChirp(pulse_param);
+
+% pulse 2: pi pulse
+pulse_param.tp = tau(2);
+pulse_param.delta_t = tau(1) + tau(2)/2;
+pulse_param.Q = param.Q180;
+p2 = LinearChirp(pulse_param);
+
+% double chirp pulse sequence
+seq = param; % saving all the parameters
+seq.tau = tau;
+seq.pulses = {p1, p2};
+seq.total_time = sum(tau);
+
+if param.display_result == true
+    
+    seq_pulses_disp(seq);
+    plot_seq(seq);
+    
+    % phase cycling
+    ph1 = [0 0 0 0];
+    ph2 = [0 1 2 3];
+    
+    CTP = [+1 -2]; % coherence transfer pathway
+    phrec = phase_cycle_receiver([ph1; ph2], CTP);
+    
+    ph_cy = pi/2 * [ph1; ph2; phrec];
+
+    % offsets
+    n_offs = 101;
+    offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
+    
+    % magnetization calculation for display
+    final_magn = magn_calc_rot(seq.pulses, seq.total_time, ph_cy, offs);
+    plot_magn(final_magn, offs)
+    
+end
+
+end
+
+function grumble(param)
+
+if ~isfield(param, 'tres')
+    error('seq_param must contain the time resolution tres (s)')
+end
+
+if ~isfield(param, 'bw')
+    error('seq_param must contain the bandwidth bw (Hz)')
+elseif ~isreal(param.bw) || param.bw <= 0
+    error('seq_param.bw must be a real positive number')
+end
+
+% definiton check for t90min and t180min
+if sum([isfield(param, 't90min') isfield(param, 't180min') isfield(param, 'w1max')]) ~= 1
+    error(['seq_param needs to contain one and one only of the' ...
+           ' following parameters: t90min, t180min, w1max.'])
+end
+
+if isfield(param, 't90min')
+    if ~isreal(param.t90min)
+        error('t90min must be real')
+    end
+    if isfield(param, 'TBPmin')
+        error('t90min and t180min already input, TBPmin cannot be input')
+    end
+elseif isfield(param, 't180min')
+    if ~isreal(param.t180min)
+        error('t180min must be real')
+    end
+    if isfield(param, 'TBPmin')
+        error('t90min and t180min already input, TBPmin cannot be input')
+    end
+elseif isfield(param, 'w1max')
+    if ~isreal(param.w1max) || param.w1max <= 0
+        error('w1max must be a real positive number')
+    end
+    if isfield(param, 'TBPmin')
+        if ~isreal(param.TBPmin) || param.TBPmin <= 0
+            error('TBPmin must be a real positive number')
+        end
+    end
+end
+
+if isfield(param, 'Q90')
+    if ~isreal(param.Q90) || param.Q90 <= 0
+        error('Q90 must be a real positive number')
+    end
+    if param.Q90 < 0.44  || param.Q90 >0.45
+        disp('Caution, Q90 is generally taken at 0.44')
+    end
+end
+
+if isfield(param, 'Q180')
+    if ~isreal(param.Q180) || param.Q180 <= 0
+        error('Q180 must be a real positive number')
+    end
+    if param.Q180 < 3  || param.Q180 > 5
+        disp('Caution, Q180 is generally taken between 3 and 5')
+    end
+end
+
+if isfield(param, 'display_result')
+    if ~islogical(param.display_result)
+        error('display_result must be a boolean')
+    end
+end
+
+end

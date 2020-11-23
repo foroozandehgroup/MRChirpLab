@@ -1,0 +1,27 @@
+Sequence ID = TwoChirp_bw_400MHz_640ns
+ID number   = 4209
+Total time  = 0.64 us
+Bandwidth   = 400 MHz
+Date        = 31-Jul-2020
+Time        = 11:24:24
+
+Pulse 1
+Type                          = sinsmoothed
+Excitation field amplitude w1 = 9369.5313 kHz
+Duration tp                   = 0.32 us
+Adiabaticity factor Q         = 0.44127
+Time resolution tres          = 0.000625 us
+Number of points np           = 512
+Smoothing sm                  = 12.5 %
+
+Pulse 2
+Type                          = sinsmoothed
+Excitation field amplitude w1 = 39894.228 kHz
+Duration tp                   = 0.16 us
+Adiabaticity factor Q         = 4
+Time resolution tres          = 0.000625 us
+Number of points np           = 256
+Smoothing sm                  = 12.5 %
+
+
+resonator compensation centrered at 9.45GHz

@@ -38,9 +38,9 @@ for i = 1:length(pulses)
     
     if plot_type == "cartesian"
         
-        plot(p.t, p.Cx, 'Color', [0 0.25 0.75])
+        plot(p.t, p.Cx, 'Color', '#002147', 'Linewidth', 1)
         hold on
-        plot(p.t, p.Cy, 'Color', [0.9 0.05 0.05])
+        plot(p.t, p.Cy, 'Color', '#FC3C3C', 'Linewidth', 1)
         hold off
         
         if size(pulses) < 2
@@ -49,7 +49,7 @@ for i = 1:length(pulses)
         
     elseif plot_type == "polar"
         
-        plot(p.t, p.Pr, 'Color', [0 0.25 0.75])
+        plot(p.t, p.Pr, 'Color', '#002147', 'Linewidth', 1)
         
         if size(pulses) < 2
             ylabel('\omega_1(t) (Hz)')
@@ -57,7 +57,7 @@ for i = 1:length(pulses)
         
         hold on
         yyaxis right
-        plot(p.t, p.Pph, 'Color', [0.9 0.05 0.05])
+        plot(p.t, p.Pph, 'Color', '#FC3C3C', 'Linewidth', 1)
         hold off
         
         if size(pulses) < 2
@@ -70,9 +70,9 @@ for i = 1:length(pulses)
     elseif plot_type == "Xepr"
         
         shape = pulse_Xepr_format(p);
-        plot(p.t, shape(:,1), 'Color', [0 0.25 0.75])
+        plot(p.t, shape(:,1), 'Color', '#002147', 'Linewidth', 1)
         hold on
-        plot(p.t, shape(:,2), 'Color', [0.9 0.05 0.05])
+        plot(p.t, shape(:,2), 'Color', '#FC3C3C', 'Linewidth', 1)
         hold off
         
     end

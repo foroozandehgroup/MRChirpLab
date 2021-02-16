@@ -32,6 +32,7 @@ toc
 disp('display and polynomial fitting (2 magnetization computation)')
 ch_param.phase_polynomial_fitting = true;
 ch_param.display_result = true;
+ch_param.polyfit_start = 10;
 tic
 chorus_seq4 = chorus(ch_param);
 toc
@@ -42,6 +43,7 @@ ch_param.pulse_param.sm = 5;
 
 ch_param.phase_polynomial_fitting = true;
 ch_param.polyfit_degree = 5;
+ch_param.polyfit_start = 10;
 ch_param.display_result = true;
 tic
 chorus_seq4 = chorus(ch_param);

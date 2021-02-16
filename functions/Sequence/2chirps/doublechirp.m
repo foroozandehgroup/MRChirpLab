@@ -31,6 +31,8 @@ function seq = doublechirp(param)
 %   order (s)
 %   - pulses, cell array containing the pulse structures (LinearChirp)
 %   - total_time, total time of the pulse sequence (s)
+%   - ph_cy, a proposed phase cycle - used for possible simulations in the
+%   function
 
 
 grumble(param)
@@ -120,14 +122,14 @@ if param.display_result == true
     CTP = [+1 -2]; % coherence transfer pathway
     phrec = phase_cycle_receiver([ph1; ph2], CTP);
     
-    ph_cy = pi/2 * [ph1; ph2; phrec];
+    seq.ph_cy = pi/2 * [ph1; ph2; phrec];
 
     % offsets
     n_offs = 101;
     offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
     
     % magnetization calculation for display
-    final_magn = magn_calc_rot(seq.pulses, seq.total_time, ph_cy, offs);
+    final_magn = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
     plot_magn(final_magn, offs)
     
 end

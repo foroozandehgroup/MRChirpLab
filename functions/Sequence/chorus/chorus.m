@@ -23,7 +23,11 @@ function seq = chorus(param)
 %   - pulse_param, a structure containing desired LinearChirp parameters
 %   - phase_polynomial_fitting, a boolean to launch a magnetizaiton
 %   computation which leads to a phase correction of the sequence (set to
-%   fault by default)
+%   fault by default). When set to true, these additional parameters are
+%   available (cf. polyfit_ph documentation for more details):
+%       - polyfit_degree
+%       - polyfit_start
+%       - polyfit_stop
 %   - display_result, a boolean which allows to display the sequence and
 %   the results of simulation/calculation (set to false by default)
 %
@@ -33,6 +37,8 @@ function seq = chorus(param)
 %   order (s)
 %   - pulses, a cell array containing the pulse structures (LinearChirp)
 %   - total_time, the total time of the pulse sequence (s)
+%   - ph_cy, a proposed phase cycle - used for possible simulations in the
+%   function
 
 
 grumble(param)
@@ -136,41 +142,52 @@ if param.phase_polynomial_fitting == true || param.display_result == true
     CTP = [-1 +2 -2]; % coherence transfer pathway
     phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
 
-    ph_cy = 3*pi/2 * [ph1; ph2; ph3; phrec];
-    % no phase cycling: ph_cy = [0; 0; 0; 0];
+    seq.ph_cy = 3*pi/2 * [ph1; ph2; ph3; phrec];
+    % no phase cycling: seq.ph_cy = [0; 0; 0; 0];
+    
     % offsets
     n_offs = 101;
     offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
 
-    final_magnetization_1 = magn_calc_rot(seq.pulses, seq.total_time, ph_cy, offs);
-    % final_magnetization_1 = magn_calc_LvN(seq, seq.total_time, ph_cy, offs);
+    final_magn_1 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
     
     if param.display_result == true
-        plot_magn(final_magnetization_1, offs)
+        plot_magn(final_magn_1, offs)
     end
 end
 
 %  polynomial fitting for phase correction
 if param.phase_polynomial_fitting == true
     
-    % phase retrieval
-    ph = magn_phase(final_magnetization_1);
-    
+
+    % polyfit options
     if ~isfield(param, 'polyfit_degree')
         param.polyfit_degree = 5;
+    end
+    
+    if isfield(param, 'polyfit_start')
+        polyfit_options.start = param.polyfit_start;
+    end
+    
+    if isfield(param, 'polyfit_stop')
+        polyfit_options.stop = param.polyfit_stop;
     end
     
     polyfit_options.polyfit_degree = param.polyfit_degree;
     polyfit_options.display_result = param.display_result;
     
+    % phase retrieval
+    ph = magn_phase(final_magn_1);
+    
+    % polyfit
     ph_corr = polyfit_ph(p1, ph, polyfit_options);
 
     % pulse 1 phase correction
     seq.pulses{1} = pulse_phase_correction(seq.pulses{1}, ph_corr);
     
     if param.display_result == true
-        final_magnetization_2 = magn_calc_rot(seq.pulses, seq.total_time, ph_cy, offs);
-        plot_magn(final_magnetization_2, offs)
+        final_magn_2 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
+        plot_magn(final_magn_2, offs)
     end
 end
 

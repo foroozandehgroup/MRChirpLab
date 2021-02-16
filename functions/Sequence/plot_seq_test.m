@@ -27,7 +27,13 @@ ch_param.display_result = false;
 
 chorus_seq = chorus(ch_param);
 
-plot_seq(chorus_seq)
 plot_seq(chorus_seq, 'amplitude')
+plot_seq(chorus_seq, 'cartesian')
+
+try
+    plot_seq(chorus_seq, 'oklm')
+catch error
+    disp(error.message)
+end
 
 end

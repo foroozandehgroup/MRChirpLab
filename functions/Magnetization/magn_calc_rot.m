@@ -13,8 +13,6 @@ function magn_fin = magn_calc_rot(pulses, trec, ph_cy, offsets)
 %   the different offsets of off in a 2D-matrix.
 
 
-disp('Magnetization computation...')
-
 np_offs = length(offsets);
 magn_fin_pc = zeros(3, np_offs, length(ph_cy(1,:)));
 

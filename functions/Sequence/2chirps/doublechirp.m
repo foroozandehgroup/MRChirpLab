@@ -129,6 +129,7 @@ if param.display_result == true
     offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
     
     % magnetization calculation for display
+    disp('Magnetization computation...')
     final_magn = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
     plot_magn(final_magn, offs)
     

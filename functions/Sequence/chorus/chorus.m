@@ -148,7 +148,8 @@ if param.phase_polynomial_fitting == true || param.display_result == true
     % offsets
     n_offs = 101;
     offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
-
+    
+    disp('Magnetization computation...')
     final_magn_1 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
     
     if param.display_result == true
@@ -186,8 +187,11 @@ if param.phase_polynomial_fitting == true
     seq.pulses{1} = pulse_phase_correction(seq.pulses{1}, ph_corr);
     
     if param.display_result == true
+        
+        disp('Magnetization computation...')
         final_magn_2 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
         plot_magn(final_magn_2, offs)
+        
     end
 end
 

@@ -8,7 +8,7 @@ param.display_result = true;
 
 seq = doublechirp(param);
 
-param = rmfield(param, 'Rmin');
+param = rmfield(param, 'TBPmin');
 param = rmfield(param, 'w1max');
 
 param.t90min = 886e-6;

@@ -17,8 +17,6 @@ function magn_fin = magn_calc_rot_full(pulses, tcalc, ph_cy, offsets)
 
 grumble(tcalc)
 
-disp('Magnetization computation...')
-
 np_offs = length(offsets);
 
 magn_fin_pc = zeros(3, length(tcalc), np_offs, length(ph_cy(1,:)));

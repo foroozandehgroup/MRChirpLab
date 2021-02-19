@@ -11,7 +11,11 @@ function shape = pulse_TopSpin_format(p)
 %	0 to 360°)
 
 
-shape(:,1) = 100 * rescale(p.Pr, 'minmax');
+shape(:,1) = 100 * p.Pr / max(p.Pr);
+
+% does not work with Matlab 2019
+% shape(:,1) = 100 * rescale(p.Pr, 'minmax');
+
 shape(:,2) = rad2deg(wrapTo2Pi(p.Pph));
 
 end

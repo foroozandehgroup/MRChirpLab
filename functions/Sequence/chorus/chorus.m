@@ -30,6 +30,8 @@ function seq = chorus(param)
 %       - polyfit_stop
 %   - display_result, a boolean which allows to display the sequence and
 %   the results of simulation/calculation (set to false by default)
+%   - t_delay to add a delay between the 180deg pulses and at the end of 
+%   the sequence (s)
 %
 % Fields contained in seq:
 %   - all the field mentionned above (with input/default value)
@@ -275,5 +277,17 @@ if isfield(param, 'display_result')
         error('display_result must be a boolean')
     end
 end
+
+% checking for unexpected input
+input_param = fieldnames(param);
+for i = 1:length(input_param)
+    if ~ismember(input_param{i},["bw", "tres", "TBPmin", "w1max", ...
+            "t90min", "t180min", "Q90" , "Q180", "pulse_param", ...
+            "display_result" , "phase_polynomial_fitting", ...
+            "polyfit_degree", "polyfit_start", "polyfit_stop", "t_delay"])
+        disp(['Careful, ' input_param{i} ' is not a standard parameter.'])
+    end
+end
+
 
 end

@@ -3,7 +3,7 @@ function doublechirp_test()
 param.bw = 500000; % bandwidth
 param.tres = 5e-7;
 param.w1max = 30e3;
-param.Rmin = 150;
+param.TBPmin = 150;
 param.display_result = true;
 
 seq = doublechirp(param);

@@ -12,7 +12,7 @@ end
 
 format short g
 disp(" ")
-header = {'tp (ms)','TBP','w1 (Hz)'};
+header = {'tp (ms)','TBP','w1 (kHz)'};
 disp([header; num2cell(data_disp)])
 disp("Total time (s): " + seq.total_time)
 disp("")

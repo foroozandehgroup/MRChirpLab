@@ -12,6 +12,7 @@ function magn_fin = magn_calc_rot(pulses, trec, ph_cy, offsets)
 %   - magn_fin, calculated magnetization which is output at x,y, and z for 
 %   the different offsets of off in a 2D-matrix.
 
+grumble(pulses, ph_cy)
 
 np_offs = length(offsets);
 magn_fin_pc = zeros(3, np_offs, length(ph_cy(1,:)));
@@ -60,8 +61,18 @@ magn_fin = sum(magn_fin_pc, 3) / length(ph_cy(1,:));
 
 end
 
+function grumble(pulses, ph_cy)
 
+if ~iscell(pulses)
+    error('pulses should be a cell array')
+end
 
+s = size(ph_cy);
+if s(1) ~= length(pulses)+1
+    error('length(ph_cy(i,:)) must be equal to the number of pulses + 1')
+end
+
+end
 
 
 

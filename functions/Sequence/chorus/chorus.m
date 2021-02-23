@@ -129,23 +129,24 @@ seq.tau = tau;
 seq.pulses = {p1, p2, p3};
 seq.total_time = p3.delta_t + p3.tp / 2 + t_delay;
 
+    
+% phase cycling
+ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
+ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
+ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
+
+CTP = [-1 +2 -2]; % coherence transfer pathway
+phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
+
+seq.ph_cy = 3*pi/2 * [ph1; ph2; ph3; phrec];
+% no phase cycling: seq.ph_cy = [0; 0; 0; 0];
+    
 if param.display_result == true
     seq_pulses_disp(seq);
 end
 
 % magnetization calculation for polynomial fitting/display
 if param.phase_polynomial_fitting == true || param.display_result == true
-    
-    % phase cycling
-    ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
-    ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
-    ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
-    
-    CTP = [-1 +2 -2]; % coherence transfer pathway
-    phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
-
-    seq.ph_cy = 3*pi/2 * [ph1; ph2; ph3; phrec];
-    % no phase cycling: seq.ph_cy = [0; 0; 0; 0];
     
     % offsets
     n_offs = 101;

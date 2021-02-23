@@ -84,6 +84,10 @@ end
 
 function grumble(pulse, phase, opt)
 
+if length(phase) < 20
+    error('phase length needs to be superior to 20.') 
+end
+
 if isfield(opt, 'display_result')
     if ~islogical(opt.display_result)
         error('display_result must be a boolean')

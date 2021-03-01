@@ -22,7 +22,7 @@ if plot_type == "cartesian"
     plot(t, Cx, 'Color', '#002147', 'Linewidth', 1)
     
     hold on
-    plot(t, Cy, 'Color', '#FC3C3C', 'Linewidth', 1)
+    plot(t, Cy, 'Color', '#BF0B0B', 'Linewidth', 1)
     hold off
     ylabel('C_x and C_y (Hz)')
     

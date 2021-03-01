@@ -210,7 +210,7 @@ for i = 1:length(input_param)
     if ~ismember(input_param{i},["bw", "tres", "TBPmin", "w1max", ...
             "t90min", "t180min", "Q90" , "Q180", "pulse_param", ...
             "display_result"])
-        disp(['Careful, ' input_param{i} ' is not a standard parameter.'])
+        warning(['Careful, ' input_param{i} ' is not a standard parameter.'])
     end
 end
 

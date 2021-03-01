@@ -234,8 +234,8 @@ if isfield(param,'type')
             end
         end
         if isfield(param, 'n')
-            disp(['Gaussian index n not required for a sin smoothed ' ...
-                  'linear chirp, n neglected during creation.'])
+            warning(['Gaussian index n not required for a sinsmoothed ' ...
+                     'linear chirp, n neglected during creation.'])
         end
     end
 end

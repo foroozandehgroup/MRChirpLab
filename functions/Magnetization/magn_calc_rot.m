@@ -69,7 +69,8 @@ end
 
 s = size(ph_cy);
 if s(1) ~= length(pulses)+1
-    error('length(ph_cy(i,:)) must be equal to the number of pulses + 1')
+    error(['ph_cy number of lines, length(ph_cy(:,1)), must be equal ' ...
+           'to the number of pulses + 1'])
 end
 
 end

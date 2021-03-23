@@ -1,8 +1,0 @@
-% JBV 18.11.2020
-
-% The pulses shapes used for the experiments in the main text are given in
-% folders as they were originally generated.
-%
-% Due to the evolution of the code, the scripts do not produce the exact 
-% same output in their respective generated folders but the shapes
-% themselves are the same.

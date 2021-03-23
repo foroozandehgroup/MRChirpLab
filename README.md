@@ -9,4 +9,4 @@ The Magnetic Resonance Chirp toolbox in MATLAB is organized as follows:
       
   - Examples of tools uses in directory examples
   
-  - Workspace contains more specific applications (data from the article "Chirped ordered pulses for ultra-broadband ESR spectroscopy")
+Remark: code and data from the article the article "Chirped ordered pulses for ultra-broadband ESR spectroscopy" available in tagged release 1.0

@@ -31,7 +31,7 @@ function seq = doublechirp(param)
 %   order (s)
 %   - pulses, cell array containing the pulse structures (LinearChirp)
 %   - total_time, total time of the pulse sequence (s)
-%   - ph_cy, a proposed phase cycle - used for possible simulations in the
+%   - pc, a proposed phase cycle - used for possible simulations in the
 %   function
 
 
@@ -110,28 +110,29 @@ seq.tau = tau;
 seq.pulses = {p1, p2};
 seq.total_time = sum(tau);
 
+% proposed phase cycling
+ph1 = [0 0 0 0];
+ph2 = [0 1 2 3];
+
+CTP = [+1 -2]; % coherence transfer pathway
+phrec = phase_cycle_receiver([ph1; ph2], CTP);
+
+seq.pc = pi/2 * [ph1; ph2; phrec];
+
 if param.display_result == true
     
     seq_pulses_disp(seq);
     plot_seq(seq);
-    
-    % phase cycling
-    ph1 = [0 0 0 0];
-    ph2 = [0 1 2 3];
-    
-    CTP = [+1 -2]; % coherence transfer pathway
-    phrec = phase_cycle_receiver([ph1; ph2], CTP);
-    
-    seq.ph_cy = pi/2 * [ph1; ph2; phrec];
 
     % offsets
-    n_offs = 101;
-    offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
+    off = linspace(-seq.bw/2, seq.bw/2, 101);
+    
+    opt.pc = seq.pc;
     
     % magnetization calculation for display
     disp('Magnetization computation...')
-    final_magn = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
-    plot_magn(final_magn, offs)
+    final_magn = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
+    plot_magn(final_magn, off)
     
 end
 

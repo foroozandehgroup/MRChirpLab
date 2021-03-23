@@ -39,7 +39,7 @@ function seq = chorus(param)
 %   order (s)
 %   - pulses, a cell array containing the pulse structures (LinearChirp)
 %   - total_time, the total time of the pulse sequence (s)
-%   - ph_cy, a proposed phase cycle - used for possible simulations in the
+%   - pc, a proposed phase cycle - used for possible simulations in the
 %   function
 
 
@@ -129,7 +129,6 @@ seq.tau = tau;
 seq.pulses = {p1, p2, p3};
 seq.total_time = p3.delta_t + p3.tp / 2 + t_delay;
 
-    
 % suggested phase cycling
 ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
 ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
@@ -138,7 +137,7 @@ ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
 CTP = [-1 +2 -2]; % coherence transfer pathway
 phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
 
-seq.ph_cy = 3*pi/2 * [ph1; ph2; ph3; phrec];
+seq.pc = 3*pi/2 * [ph1; ph2; ph3; phrec];
 % no phase cycling: seq.ph_cy = [0; 0; 0; 0];
     
 if param.display_result == true
@@ -149,14 +148,15 @@ end
 if param.phase_polynomial_fitting == true || param.display_result == true
     
     % offsets
-    n_offs = 101;
-    offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
+    off = linspace(-seq.bw/2, seq.bw/2, 101);
+    
+    opt.pc = seq.pc;
     
     disp('Magnetization computation...')
-    final_magn_1 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
+    final_magn_1 = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
     
     if param.display_result == true
-        plot_magn(final_magn_1, offs)
+        plot_magn(final_magn_1, off)
     end
 end
 
@@ -192,8 +192,8 @@ if param.phase_polynomial_fitting == true
     if param.display_result == true
         
         disp('Magnetization computation...')
-        final_magn_2 = magn_calc_rot(seq.pulses, seq.total_time, seq.ph_cy, offs);
-        plot_magn(final_magn_2, offs)
+        final_magn_2 = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
+        plot_magn(final_magn_2, off)
         
     end
 end

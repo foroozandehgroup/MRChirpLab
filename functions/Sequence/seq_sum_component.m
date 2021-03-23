@@ -11,13 +11,19 @@ function [t, component_sum] = seq_sum_component(seq, component)
 %   - t, time vector corresponding to the summed component
 %   - component_sum, component sum vector
 
+t = [];
+component_sum = [];
 
-t = seq.pulses{1}.t;
+% possible delay at start of the sequence
+if seq.pulses{1}.t(1) > 0
 
-str = "seq.pulses{1}." + component;
-component_sum = eval(str);
+    t_delay = 0:seq.pulses{1}.tres:seq.pulses{1}.t(1);
+    t = [t t_delay];
 
-for i = 2:length(seq.pulses)
+    component_sum = [component_sum zeros(1,length(t_delay))];
+end
+
+for i = 1:length(seq.pulses)
     
     t = [t seq.pulses{i}.t];
     
@@ -36,7 +42,7 @@ for i = 2:length(seq.pulses)
     end
 end
 
-% delay at the end of the sequence
+% possible delay at the end of the sequence
 if seq.pulses{end}.t(end) < seq.total_time
 
     t_delay = seq.pulses{end}.t(end):seq.pulses{1}.tres:seq.total_time;

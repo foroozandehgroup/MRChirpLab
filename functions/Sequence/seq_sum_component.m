@@ -39,7 +39,7 @@ end
 % delay at the end of the sequence
 if seq.pulses{end}.t(end) < seq.total_time
 
-    t_delay = seq.pulses{end}.t(end):seq.tres:seq.total_time;
+    t_delay = seq.pulses{end}.t(end):seq.pulses{1}.tres:seq.total_time;
     t = [t t_delay];
 
     component_sum = [component_sum zeros(1,length(t_delay))];

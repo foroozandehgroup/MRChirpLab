@@ -11,7 +11,7 @@ function phi_corr = polyfit_ph(pulse, phase, opt)
 %             results
 %           - start, percentage between 0 and 100 corresponding to the
 %           starting point on phase for the polynomial fitting
-%           -stop, cf. start but for the stopping point.
+%           - stop, cf. start but for the stopping point.
 %
 % Output:
 %     - phi_corr, array containing the phase corrections in degrees to be

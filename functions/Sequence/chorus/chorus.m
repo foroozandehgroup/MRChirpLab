@@ -130,7 +130,7 @@ seq.pulses = {p1, p2, p3};
 seq.total_time = p3.delta_t + p3.tp / 2 + t_delay;
 
     
-% phase cycling
+% suggested phase cycling
 ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
 ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
 ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
@@ -207,24 +207,24 @@ end
 function grumble(param)
 
 if ~isfield(param, 'tres')
-    error('seq_param must contain the time resolution tres (s)')
+    error('param must contain the time resolution tres (s)')
 end
 
 if ~isfield(param, 'bw')
-    error('seq_param must contain the bandwidth bw (Hz)')
+    error('param must contain the bandwidth bw (Hz)')
 elseif ~isreal(param.bw) || param.bw <= 0
-    error('seq_param.bw must be a real positive number')
+    error('param.bw must be a real positive number')
 end
 
 % definiton check for t90min and t180min
 if ~isfield(param, 't90min') && ~isfield(param, 'w1max')
-    error('seq_param must contain either t90min and t180min, or w1max.')
+    error('param must contain either t90min and t180min, or w1max.')
 elseif isfield(param, 't90min') || isfield(param, 't180min')
     if ~isfield(param, 't90min')
-        error('seq_param must contain t90min if t180min is input')
+        error('param must contain t90min if t180min is input')
     end
     if ~isfield(param, 't180min')
-        error('seq_param must contain t180min if t90min is input')
+        error('param must contain t180min if t90min is input')
     end
     if ~isreal(param.t90min)
         error('t90min must be real')

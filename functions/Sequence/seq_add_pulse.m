@@ -6,7 +6,7 @@ function seq = seq_add_pulse(seq, p)
 %   - p, the pulse to be added at the end of the sequence
 %
 % Output:
-%   - seq, the sequence with th added pulses at the end
+%   - seq, the sequence with the added pulse at the end
 
 
 % adding pulse duration

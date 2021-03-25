@@ -34,7 +34,7 @@ for i = 1:length(seq.pulses)
         
         if seq.pulses{i}.t(end) < seq.pulses{i+1}.t(1)
             
-            t_delay = seq.pulses{i}.t(end):seq.tres:seq.pulses{i+1}.t(1);
+            t_delay = seq.pulses{i}.t(end)+seq.pulses{1}.tres:seq.pulses{1}.tres:seq.pulses{i+1}.t(1);
             t = [t t_delay];
 
             component_sum = [component_sum zeros(1,length(t_delay))];

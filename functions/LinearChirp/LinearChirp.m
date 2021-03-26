@@ -114,9 +114,10 @@ end
 % adjusted tres
 p.tres = tpa / p.np;
 
-% time frame of the pulse
+% time frame of the pulse: center of each segment (representation of an
+% analytical function)
 pulse_start = p.delta_t - p.tp / 2;
-p.t = pulse_start + linspace(0,p.tres*p.np,p.np);
+p.t = pulse_start + linspace(p.tres/2, p.tres*p.np-p.tres/2, p.np);
 
 if p.type == "superGaussian"
     
@@ -169,7 +170,7 @@ elseif p.type == "sinsmoothed"
     % d(phase)/dt = sweep_rate * t + f0 (= instant. freq.)
     f0 = -p.bw / 2;
     sweep_rate = p.bw / p.tp;
-    t = linspace(0, p.tp, p.np);
+    t = p.t - p.delta_t + p.tp/2;
     integral_instant_freq = (sweep_rate * t.^2) / 2 + f0 * t;
     
     % polar coordinates Pr and Pph

@@ -1,5 +1,6 @@
 function total_rot_mat = Rrod(Cx_t, Cy_t, offs, delta_t)
 % Returns the rotational matrix associated with a point of a linear chirp
+% (or segment of the chirp)
 % 
 % Uses Rodrigues formula
 %
@@ -7,7 +8,7 @@ function total_rot_mat = Rrod(Cx_t, Cy_t, offs, delta_t)
 %     - Omega, point B1 field strength
 %     - offs, point offset
 %     - phi, point phase
-%     - delta_t, point time
+%     - delta_t, point time (duration of the segment)
 %
 % Output:
 %     - total_rot_mat: rotational matrix point associated with the 

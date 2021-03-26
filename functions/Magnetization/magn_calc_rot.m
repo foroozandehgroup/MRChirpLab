@@ -51,8 +51,8 @@ if ~isfield(opt, 'pc') && ~isfield(opt, 'B1')
         for i = 1:length(pulses)
 
             % potential delay between pulses 
-            if pulses{i}.t(1) > t + pulses{i}.tres
-                delay = pulses{i}.t(1) - t;
+            if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                 magn = Rz(off(ioff) * delay) * magn;
             end
 
@@ -63,7 +63,7 @@ if ~isfield(opt, 'pc') && ~isfield(opt, 'B1')
             end
 
             % end time after last pulse
-            t = pulses{i}.t(end);
+            t = pulses{i}.delta_t + pulses{i}.tp/2;
         end
 
         % potential delay at the end of the pulse sequence
@@ -96,8 +96,8 @@ if isfield(opt, 'pc') && ~isfield(opt, 'B1')
             for i = 1:length(pulses)
 
                 % potential delay between pulses 
-                if pulses{i}.t(1) > t + pulses{i}.tres
-                    delay = pulses{i}.t(1) - t;
+                if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                    delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                     magn = Rz(off(ioff) * delay) * magn;
                 end
 
@@ -109,7 +109,7 @@ if isfield(opt, 'pc') && ~isfield(opt, 'B1')
                 end
 
                 % end time after last pulse
-                t = pulses{i}.t(end);
+                t = pulses{i}.delta_t + pulses{i}.tp/2;
             end
 
             % potential delay at the end of the pulse sequence
@@ -145,8 +145,8 @@ if ~isfield(opt, 'pc') && isfield(opt, 'B1')
             for i = 1:length(pulses)
 
                 % potential delay between pulses 
-                if pulses{i}.t(1) > t + pulses{i}.tres
-                    delay = pulses{i}.t(1) - t;
+                if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                    delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                     magn = Rz(off(ioff) * delay) * magn;
                 end
 
@@ -161,7 +161,7 @@ if ~isfield(opt, 'pc') && isfield(opt, 'B1')
                 end
 
                 % end time after last pulse
-                t = pulses{i}.t(end);
+                t = pulses{i}.delta_t + pulses{i}.tp/2;
             end
 
             % potential delay at the end of the pulse sequence
@@ -198,8 +198,8 @@ if isfield(opt, 'pc') && isfield(opt, 'B1')
                 for i = 1:length(pulses)
 
                     % potential delay between pulses 
-                    if pulses{i}.t(1) > t + pulses{i}.tres
-                        delay = pulses{i}.t(1) - t;
+                    if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                        delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                         magn = Rz(off(ioff) * delay) * magn;
                     end
 
@@ -215,7 +215,7 @@ if isfield(opt, 'pc') && isfield(opt, 'B1')
                     end
 
                     % end time after last pulse
-                    t = pulses{i}.t(end);
+                    t = pulses{i}.delta_t + pulses{i}.tp/2;
                 end
 
                 % potential delay at the end of the pulse sequence

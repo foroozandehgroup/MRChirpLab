@@ -114,7 +114,7 @@ p.np = floor(tpa / p.tres);
 
 if p.np > 50000 % check to avoid overloading memory
     
-    disp("Caution, high number of points (" + num2str(p.np)+ " points)")
+    warning("Caution, high number of points (" + num2str(p.np)+ " points)")
     prompt = input('Keep going ? (Y to continue) ','s');
     
     if prompt ~= 'Y'
@@ -189,6 +189,37 @@ elseif p.type == "sinsmoothed"
     p.Pr = [smoothed_side unsmoothed_middle flip(smoothed_side)];
     p.Pph = 2 * pi * integral_instant_freq + p.phi0;
 
+elseif p.type == "WURST"
+
+        % smoothing percentage
+    if isfield(param, 'n')
+        p.n = param.n;
+    else
+        p.n = 80; % default n values
+    end
+    
+    % phase calculated from instantaneous frequency
+    % d(phase)/dt = sweep_rate * t + f0 (= instant. freq.)
+    f0 = -p.bw / 2;
+    sweep_rate = p.bw / p.tp;
+    t = p.t - p.delta_t + p.tp/2;
+    integral_instant_freq = (sweep_rate * t.^2) / 2 + f0 * t;
+    
+    % polar coordinates Pr and Pph
+    p.Pr = p.w1 * (1-abs(sin((pi * (t-p.tp/2))/p.tp)).^p.n);
+    p.Pph = 2 * pi * integral_instant_freq + p.phi0;
+
+    % smoothing percentage sm
+    try
+        i_sm = 1; % unsmoothed part beginning index
+
+        while p.Pr(i_sm) < 0.99 * p.w1
+            i_sm = i_sm+1;
+        end
+        p.sm = 100 * i_sm / length(p.Pr);
+    catch
+        warning('Smoothing sm could not be computed')
+    end  
 end
 
 % continuity of the phase
@@ -225,18 +256,35 @@ if isfield(param,'tres')
     end
 end
 
-if isfield(param,'n') 
-    if ~isreal(param.n) || rem(param.n,2)~=0 || floor(param.n)~=param.n || param.n <= 0
-
-    error(['n, the factor determining the smoothing enveloppe must be ' ...
-          'an even positive integer.'])
+if isfield(param,'n')
+    
+    if isfield(param,'type')
+        
+        if param.type == "WURST"
+            if ~isreal(param.n)
+                error(['n, the factor determining the smoothing enveloppe must be ' ...
+                       'an even positive integer for WURST pulse.'])
+            end
+        elseif param.type == "sinsmoothed"
+            warning(['Index n not required for a sinsmoothed ' ...
+                     'linear chirp, n neglected during creation.'])
+            
+        elseif param.type == "superGaussian"
+            if ~isreal(param.n) || rem(param.n,2)~=0 || floor(param.n)~=param.n || param.n <= 0
+                error(['n, the factor determining the smoothing enveloppe must be ' ...
+                       'an even positive integer for a superGaussian pulse.'])
+            end
+        end
+    elseif ~isreal(param.n) || rem(param.n,2)~=0 || floor(param.n)~=param.n || param.n <= 0
+        error(['n, the factor determining the smoothing enveloppe must be ' ...
+               'an even positive integer for a superGaussian pulse.'])
     end
 end
 
 if isfield(param,'type')
-    if param.type ~= "superGaussian" && param.type ~= "sinsmoothed"
+    if param.type ~= "superGaussian" && param.type ~= "sinsmoothed" && param.type ~= "WURST"
         error(['The type of the linear chirp must take one of the ' ...
-               'following values: superGaussian, sinsmoothed.'])
+               'following values: superGaussian, sinsmoothed, WURST.'])
     end
     
     if param.type == "sinsmoothed"
@@ -245,10 +293,6 @@ if isfield(param,'type')
                 error(['sm, the smoothing percetnage must be a real ...'
                        'number between 0 and 100 '])
             end
-        end
-        if isfield(param, 'n')
-            warning(['Gaussian index n not required for a sinsmoothed ' ...
-                     'linear chirp, n neglected during creation.'])
         end
     end
 end

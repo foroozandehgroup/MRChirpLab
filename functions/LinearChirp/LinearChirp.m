@@ -261,9 +261,9 @@ if isfield(param,'n')
     if isfield(param,'type')
         
         if param.type == "WURST"
-            if ~isreal(param.n)
+            if ~isreal(param.n) || ~isreal(param.n) <= 0
                 error(['n, the factor determining the smoothing enveloppe must be ' ...
-                       'an even positive integer for WURST pulse.'])
+                       'a positive real number for WURST pulse.'])
             end
         elseif param.type == "sinsmoothed"
             warning(['Index n not required for a sinsmoothed ' ...

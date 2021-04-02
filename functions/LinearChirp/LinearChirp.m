@@ -4,7 +4,7 @@ function p = LinearChirp(param)
 %
 % Input (properties in the structure param):
 %   Required (3 of them):
-%   - bw, bandwidth (Hz)
+%   - bw, bandwidth (Hz) - if negative, reversed sweep
 %   - w1, excitation field value (Hz)
 %   - tp, pulse duration (s)
 %   - Q, adiabacitiy factor
@@ -46,6 +46,14 @@ else
     p.type = "superGaussian"; % default type
 end
 
+% reverse sweep
+if isfield(param, 'bw')
+    if param.bw < 0
+        bw0 = param.bw; % negative value for calculation
+        param.bw = -bw0;
+    end
+end
+
 % calculating missing parameter out of the input tp, w1, bw and Q
 [calculated_param_value, calculated_param_name] = tp_w1_bw_Q(param);
 
@@ -65,7 +73,11 @@ if calculated_param_name == "Q"
     param.Q = calculated_param_value;
 end
 
-p.bw = param.bw;
+if exist('bw0','var') % reverse sweep case
+    p.bw = bw0;
+else
+    p.bw = param.bw;
+end
 p.w1 = param.w1;
 p.tp = param.tp;
 p.Q = param.Q;
@@ -95,7 +107,7 @@ else
 end
 
 % TBP factor
-p.TBP = p.bw * tpa;
+p.TBP = param.bw * tpa;
 
 % number of points
 p.np = floor(tpa / p.tres);

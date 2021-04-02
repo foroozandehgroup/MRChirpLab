@@ -81,11 +81,20 @@ param.type = "sinsmoothed";
 sinsmoothed_default = LinearChirp(param);
 
 param.sm = 40;
-param.delta_t = 500e-6;
+% param.delta_t = 500e-6;
 sinsmoothed40 = LinearChirp(param);
 
 pulses = {sinsmoothed_default, sinsmoothed40};
 titles = ["sinsmoothed default", "sinsmoothed sm=40"];
+plot_pulse(pulses, "polar", titles)
+
+% reverse sweep test
+param.sm = 10;
+param.bw = - param.bw;
+reversed_sweep = LinearChirp(param);
+
+pulses = {sinsmoothed_default, reversed_sweep};
+titles = ["sinsmoothed default", "sinsmoothed reverse sweep"];
 plot_pulse(pulses, "polar", titles)
 
 % test warning for high number of points

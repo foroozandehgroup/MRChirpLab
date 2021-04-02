@@ -5,7 +5,6 @@ param.bw = 500e6;
 param.t90min = 64e-9;
 param.t180min = 64e-9;
 
-
 chorus_uncompensated = chorus(param);
 
 f = load('resonator_profile_f.mat').f;
@@ -21,5 +20,8 @@ plot_seq(chorus_compensated)
 chorus_090 = pulse_phase_correction(chorus_compensated.pulses{1}, pi/2);
 
 plot_pulse({chorus_090 chorus_compensated.pulses{1}})
+
+chorus_simulated = seq_resonator_easyspin(chorus_compensated, f, H_f, 9.55, 'simulate');
+plot_seq(chorus_simulated)
 
 end

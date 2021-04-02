@@ -40,7 +40,7 @@ for i = 1:length(pulses)
         
         plot(p.t, p.Cx, 'Color', '#002147', 'Linewidth', 1)
         hold on
-        plot(p.t, p.Cy, 'Color', '#FC3C3C', 'Linewidth', 1)
+        plot(p.t, p.Cy, 'Color', '#BF0B0B', 'Linewidth', 1)
         hold off
         
         if size(pulses) < 2
@@ -57,7 +57,7 @@ for i = 1:length(pulses)
         
         hold on
         yyaxis right
-        plot(p.t, p.Pph, 'Color', '#FC3C3C', 'Linewidth', 1)
+        plot(p.t, p.Pph, 'Color', '#BF0B0B', 'Linewidth', 1)
         hold off
         
         if size(pulses) < 2

@@ -114,7 +114,7 @@ seq.total_time = sum(tau);
 ph1 = [0 0 0 0];
 ph2 = [0 1 2 3];
 
-CTP = [+1 -2]; % coherence transfer pathway
+CTP = [-1 +2]; % coherence transfer pathway
 phrec = phase_cycle_receiver([ph1; ph2], CTP);
 
 seq.pc = pi/2 * [ph1; ph2; phrec];

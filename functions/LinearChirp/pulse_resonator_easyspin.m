@@ -1,4 +1,4 @@
-function compensated_pulse = pulse_resonator_easyspin(p, f, H_f, nu)
+function compensated_pulse = pulse_resonator_easyspin(p, f, H_f, nu, opt_simulate)
 % [EPR] Makes the pulse compensate for the resonator effects with the
 % resonator function from EasySpin
 % 
@@ -25,8 +25,12 @@ f2 = linspace(min(f), max(f), 8*length(H_f));
 [H_f2,index] = unique(H_f); % avoid repeated values
 H_f2 = interp1(f(index), H_f2, f2, 'spline');
 
-% resonator compensation
-[t2, y_t2] = resonator(t, y_t, nu, f2, H_f2, 'compensate');
+if nargin > 4
+    [t2, y_t2] = resonator(t, y_t, nu, f2, H_f2, opt_simulate);
+else
+    % resonator compensation
+    [t2, y_t2] = resonator(t, y_t, nu, f2, H_f2, 'compensate');
+end
 
 % interpolation of the compensated pulse on original time grid
 y_t2 = interp1(t2, y_t2, t, 'nearest');
@@ -34,7 +38,7 @@ y_t2 = interp1(t2, y_t2, t, 'nearest');
 % recomputing pulse coordinates
 p.Cx = real(y_t2);
 p.Cy = imag(y_t2);
-[p.Pr, p.Pph] = cart2pol(p.Cx, p.Cy);
+[p.Pph, p.Pr] = cart2pol(p.Cx, p.Cy);
 
 compensated_pulse = p;
 

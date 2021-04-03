@@ -12,7 +12,8 @@ function p = LinearChirp(param)
 %   - delta_t, time offset or the pulse center position (s) 
 %   - phi0, phase offset (rad)
 %   - tres, time resolution of the pulse (s)
-%   - type, pulse type - either superGaussian (default) or sinsmoothed
+%   - type, pulse type - either superGaussian (default), sinsmoothed or
+%   WURST
 %   - delta_f, freqency offset (Hz) - not defined for sinsmoothed
 %   - n, smoothing enveloppe exponent for superGaussian
 %   - sm, smoothing percentage of the chirp - required for sinsmoothed
@@ -35,7 +36,8 @@ function p = LinearChirp(param)
 %
 % The pulse p is configured as a superGaussian by default. An option
 % sinsmoothed is also availbale to create a rectangular shaped pulse whose
-% sides are apodized with a sine function.
+% sides are apodized with a sine function. A WURST pulse shape is also
+% available.
 
 
 grumble(param); % input check

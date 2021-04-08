@@ -1,4 +1,4 @@
-function plot_magn(magn, off, B1, M_B1)
+function plot_magn(magn, off, B1, M_B1_comp)
 % Displays the magnetization components of magn at the offsets offs
 %
 % Input:
@@ -6,7 +6,7 @@ function plot_magn(magn, off, B1, M_B1)
 %   - offs, the offsets vector at which the components of magn are placed
 %   - B1, optional argument for magnetization simulated in offset and B1
 %   dimensions (only plots My)
-%   - M_B1, optional argument to choose which component of the 
+%   - M_B1_comp, optional argument to choose which component of the 
 %   magnetization to plot
 %
 % Plot:
@@ -59,15 +59,17 @@ elseif nargin > 2
     
     if nargin == 3
         M_B1 = magn(2, :, :); % default to My
-    elseif M_B1 == "Mx"
+    elseif M_B1_comp == "Mx"
         M_B1 = magn(1, :, :);
-    elseif M_B1 == "My"
+    elseif M_B1_comp == "My"
         M_B1 = magn(2, :, :);
-    elseif M_B1 == "Mz"
+    elseif M_B1_comp == "Mz"
         M_B1 = magn(3, :, :);
+    elseif M_B1_comp == "Mxy"
+        M_B1 = abs(magn(1,:,:)+1i*magn(2,:,:));
     else
         error(['M_B1 should be a string and can only take the ' ...
-               'following values: Mx, My, Mz'])
+               'following values: Mx, My, Mz, Mxy'])
     end
         
     r = reshape(M_B1, length(off), length(B1));
@@ -78,7 +80,7 @@ elseif nargin > 2
     mesh(off, B1, r')
     xlabel('\Delta\omega_0');
     ylabel("\omega_1 / \omega_1^0");
-    zlabel('My');
+    zlabel(M_B1_comp);
     
     subplot(1, 2, 2)
     contour(off, B1, r.', [-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.95 0.99])

@@ -57,8 +57,9 @@ if nargin == 2
 
 elseif nargin > 2
     
-    if nargin == 3
-        M_B1 = magn(2, :, :); % default to My
+    if nargin == 3 % default
+        M_B1_comp = "My";
+        M_B1 = magn(2, :, :); 
     elseif M_B1_comp == "Mx"
         M_B1 = magn(1, :, :);
     elseif M_B1_comp == "My"
@@ -83,7 +84,7 @@ elseif nargin > 2
     zlabel(M_B1_comp);
     
     subplot(1, 2, 2)
-    contour(off, B1, r.', [-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.95 0.99])
+    contour(off, B1, r.', [-0.99 -0.95 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.95 0.99])
     xlabel('\Delta\omega_0');
     ylabel("\omega_1 / \omega_1^0");
 

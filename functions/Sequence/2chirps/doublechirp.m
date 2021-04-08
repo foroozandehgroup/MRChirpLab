@@ -22,6 +22,13 @@ function seq = doublechirp(param)
 %   - Q90 and Q180, adiabaticity factors of the 90 degree and 180
 %   degrees pulses respectively   
 %   - pulse_param, structure containing desired LinearChirp parameters
+%   - phase_polynomial_fitting, a boolean to launch a magnetizaiton
+%   computation which leads to a phase correction of the sequence (set to
+%   fault by default). When set to true, these additional parameters are
+%   available (cf. polyfit_ph documentation for more details):
+%       - polyfit_degree
+%       - polyfit_start
+%       - polyfit_stop
 %   - display_result, boolean which allows to display the sequence and the 
 %   results of simulation/calculation (set to false by default)
 %
@@ -48,6 +55,10 @@ end
 
 if isfield(param, 'w1max') && ~isfield(param, 'TBPmin')
     param.TBPmin = 100;
+end
+
+if ~isfield(param, 'phase_polynomial_fitting')
+    param.phase_polynomial_fitting = false;
 end
 
 if ~isfield(param, 'display_result')
@@ -119,21 +130,62 @@ phrec = phase_cycle_receiver([ph1; ph2], CTP);
 
 seq.pc = pi/2 * [ph1; ph2; phrec];
 
-if param.display_result == true
+% magnetization calculation for polynomial fitting/display
+if param.phase_polynomial_fitting == true || param.display_result == true
     
-    seq_pulses_disp(seq);
-    plot_seq(seq);
-
     % offsets
     off = linspace(-seq.bw/2, seq.bw/2, 101);
     
     opt.pc = seq.pc;
     
-    % magnetization calculation for display
     disp('Magnetization computation...')
-    final_magn = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
-    plot_magn(final_magn, off)
+    final_magn_1 = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
     
+    if param.display_result == true
+        plot_magn(final_magn_1, off)
+    end
+end
+
+%  polynomial fitting for phase correction
+if param.phase_polynomial_fitting == true
+    
+
+    % polyfit options
+    if ~isfield(param, 'polyfit_degree')
+        param.polyfit_degree = 5;
+    end
+    
+    if isfield(param, 'polyfit_start')
+        polyfit_options.start = param.polyfit_start;
+    end
+    
+    if isfield(param, 'polyfit_stop')
+        polyfit_options.stop = param.polyfit_stop;
+    end
+    
+    polyfit_options.polyfit_degree = param.polyfit_degree;
+    polyfit_options.display_result = param.display_result;
+    
+    % phase retrieval
+    ph = magn_phase(final_magn_1);
+    
+    % polyfit
+    ph_corr = polyfit_ph(p1, ph, polyfit_options);
+
+    % pulse 1 phase correction
+    seq.pulses{1} = pulse_phase_correction(seq.pulses{1}, -ph_corr);
+    
+    if param.display_result == true
+        
+        disp('Magnetization computation...')
+        final_magn_2 = magn_calc_rot(seq.pulses, seq.total_time, off, opt);
+        plot_magn(final_magn_2, off)
+        
+    end
+end
+
+if param.display_result == true
+    plot_seq(seq);
 end
 
 end
@@ -199,6 +251,12 @@ if isfield(param, 'Q180')
     end
 end
 
+if isfield(param, 'phase_polynomial_fitting')
+    if ~islogical(param.phase_polynomial_fitting)
+        error('phase_polynomial_fitting must be a boolean')
+    end
+end
+
 if isfield(param, 'display_result')
     if ~islogical(param.display_result)
         error('display_result must be a boolean')
@@ -210,7 +268,8 @@ input_param = fieldnames(param);
 for i = 1:length(input_param)
     if ~ismember(input_param{i},["bw", "tres", "TBPmin", "w1max", ...
             "t90min", "t180min", "Q90" , "Q180", "pulse_param", ...
-            "display_result"])
+            "display_result", "phase_polynomial_fitting", ...
+            "polyfit_degree", "polyfit_start", "polyfit_stop",])
         warning(['Careful, ' input_param{i} ' is not a standard parameter.'])
     end
 end

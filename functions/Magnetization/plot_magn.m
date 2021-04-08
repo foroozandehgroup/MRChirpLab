@@ -85,6 +85,8 @@ elseif nargin > 2
     xlabel('\Delta\omega_0');
     ylabel("\omega_1 / \omega_1^0");
 
+else
+    error('Wrong number of input arguments')
 end
 
 end

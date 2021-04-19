@@ -51,7 +51,7 @@ if ~isfield(opt, 'pc') && ~isfield(opt, 'B1')
         for i = 1:length(pulses)
 
             % potential delay between pulses 
-            if pulses{i}.delta_t - pulses{i}.tp/2 > t
+            if pulses{i}.delta_t - pulses{i}.tp/2 - 10*eps > t
                 delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                 magn = Rz(off(ioff) * delay) * magn;
             end
@@ -96,7 +96,7 @@ if isfield(opt, 'pc') && ~isfield(opt, 'B1')
             for i = 1:length(pulses)
 
                 % potential delay between pulses 
-                if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                if pulses{i}.delta_t - pulses{i}.tp/2 - 10*eps > t
                     delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                     magn = Rz(off(ioff) * delay) * magn;
                 end
@@ -145,7 +145,7 @@ if ~isfield(opt, 'pc') && isfield(opt, 'B1')
             for i = 1:length(pulses)
 
                 % potential delay between pulses 
-                if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                if pulses{i}.delta_t - pulses{i}.tp/2 - 10*eps > t
                     delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                     magn = Rz(off(ioff) * delay) * magn;
                 end
@@ -198,7 +198,7 @@ if isfield(opt, 'pc') && isfield(opt, 'B1')
                 for i = 1:length(pulses)
 
                     % potential delay between pulses 
-                    if pulses{i}.delta_t - pulses{i}.tp/2 > t
+                    if pulses{i}.delta_t - pulses{i}.tp/2 - 10*eps > t
                         delay = (pulses{i}.delta_t - pulses{i}.tp/2) - t;
                         magn = Rz(off(ioff) * delay) * magn;
                     end

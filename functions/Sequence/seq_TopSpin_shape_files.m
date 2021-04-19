@@ -43,14 +43,14 @@ for i = 1:length(seq.pulses)
 
 end
 
-% % all the opened figures assumed to be linked to the sequence
-% disp('Saving all open figures...')
-% 
-% fig_list = findobj(allchild(0), 'flat', 'Type', 'figure');
-% for i = 1:length(fig_list)
-%   fig_handle = fig_list(length(fig_list)+1-i);
-%   fig_path   = [folder_name 'fig' num2str(i) '.png'];
-%   saveas(fig_handle, fig_path);
-% end
+% all the opened figures assumed to be linked to the sequence
+disp('Saving all open figures...')
+
+fig_list = findobj(allchild(0), 'flat', 'Type', 'figure');
+for i = 1:length(fig_list)
+  fig_handle = fig_list(length(fig_list)+1-i);
+  fig_path   = [folder_name 'fig' num2str(i) '.png'];
+  saveas(fig_handle, fig_path);
+end
 
 end

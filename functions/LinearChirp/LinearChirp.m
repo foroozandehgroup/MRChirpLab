@@ -263,7 +263,7 @@ if isfield(param,'n')
     if isfield(param,'type')
         
         if param.type == "WURST"
-            if ~isreal(param.n) || ~isreal(param.n) <= 0
+            if ~isreal(param.n) || param.n <= 0
                 error(['n, the factor determining the smoothing enveloppe must be ' ...
                        'a positive real number for WURST pulse.'])
             end

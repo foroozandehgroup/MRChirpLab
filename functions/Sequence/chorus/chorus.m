@@ -20,7 +20,7 @@ function seq = chorus(param)
 % Optional fields for param:
 %   - Q90 and Q180 the adiabaticity factors of the 90 degree and 180
 %   degrees pulses respectively   
-%   - pulse_param, a structure containing desired LinearChirp parameters
+%   - pulse_param, a structure containing desired MRchirp parameters
 %   - phase_polynomial_fitting, a boolean to launch a magnetizaiton
 %   computation which leads to a phase correction of the sequence (set to
 %   fault by default). When set to true, these additional parameters are
@@ -37,7 +37,7 @@ function seq = chorus(param)
 %   - all the field mentionned above (with input/default value)
 %   - tau, a vector containing the duration of the pulses and delays in
 %   order (s)
-%   - pulses, a cell array containing the pulse structures (LinearChirp)
+%   - pulses, a cell array containing the pulse structures (MRchirp)
 %   - total_time, the total time of the pulse sequence (s)
 %   - pc, a proposed phase cycle - used for possible simulations in the
 %   function
@@ -110,18 +110,18 @@ tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min];
 pulse_param.tp = tau(1);
 pulse_param.delta_t = tau(1)/2;
 pulse_param.Q = param.Q90;
-p1 = LinearChirp(pulse_param);
+p1 = MRchirp(pulse_param);
 
 % pulse 2: pi pulse
 pulse_param.tp = tau(2);
 pulse_param.delta_t = tau(1) + tau(2)/2;
 pulse_param.Q = param.Q180;
-p2 = LinearChirp(pulse_param);
+p2 = MRchirp(pulse_param);
 
 % pulse 3: pi pulse
 pulse_param.tp = tau(4);
 pulse_param.delta_t = sum(tau(1:3)) + tau(4)/2;
-p3 = LinearChirp(pulse_param);
+p3 = MRchirp(pulse_param);
 
 % chorus sequence
 seq = param; % saving all the parameters

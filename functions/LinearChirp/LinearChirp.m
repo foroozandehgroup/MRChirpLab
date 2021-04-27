@@ -182,7 +182,14 @@ elseif p.type == "sinsmoothed"
 
     % phase calculated from instantaneous frequency
     % d(phase)/dt = sweep_rate * t + f0 (= instant. freq.)
-    f0 = -p.bw / 2;
+    
+    if ~isfield(param, 'delta_f')
+        p.delta_f = 0;
+    else
+        p.delta_f = param.delta_f;
+    end
+    
+    f0 = -p.bw / 2 + p.delta_f;
     sweep_rate = p.bw / p.tp;
     t = p.t - p.delta_t + p.tp/2;
     integral_instant_freq = (sweep_rate * t.^2) / 2 + f0 * t;
@@ -193,7 +200,7 @@ elseif p.type == "sinsmoothed"
 
 elseif p.type == "WURST"
 
-        % smoothing percentage
+    % smoothing percentage
     if isfield(param, 'n')
         p.n = param.n;
     else

@@ -21,7 +21,7 @@ function seq = doublechirp(param)
 %   - TBPmin, minimum time bandwidth product if w1max is used
 %   - Q90 and Q180, adiabaticity factors of the 90 degree and 180
 %   degrees pulses respectively   
-%   - pulse_param, structure containing desired LinearChirp parameters
+%   - pulse_param, structure containing desired MRchirp parameters
 %   - phase_polynomial_fitting, a boolean to launch a magnetizaiton
 %   computation which leads to a phase correction of the sequence (set to
 %   fault by default). When set to true, these additional parameters are
@@ -36,7 +36,7 @@ function seq = doublechirp(param)
 %   - all the fields mentionned above (with input/default values)
 %   - tau, vector containing the duration of the pulses and delays in
 %   order (s)
-%   - pulses, cell array containing the pulse structures (LinearChirp)
+%   - pulses, cell array containing the pulse structures (MRchirp)
 %   - total_time, total time of the pulse sequence (s)
 %   - pc, a proposed phase cycle - used for possible simulations in the
 %   function
@@ -107,13 +107,13 @@ end
 pulse_param.tp = tau(1);
 pulse_param.delta_t = tau(1)/2;
 pulse_param.Q = param.Q90;
-p1 = LinearChirp(pulse_param);
+p1 = MRchirp(pulse_param);
 
 % pulse 2: pi pulse
 pulse_param.tp = tau(2);
 pulse_param.delta_t = tau(1) + tau(2)/2;
 pulse_param.Q = param.Q180;
-p2 = LinearChirp(pulse_param);
+p2 = MRchirp(pulse_param);
 
 % double chirp pulse sequence
 seq = param; % saving all the parameters

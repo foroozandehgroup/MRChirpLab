@@ -1,6 +1,6 @@
 function p = MRchirp(par)
 % Returns a structure containing the different properties of a 
-% phase-modulated pulse (frequency-modulate/frequency-swept pulse)
+% phase-modulated pulse (frequency-modulated/frequency-swept pulse)
 %
 % Input (properties in the structure param):
 %   Required:
@@ -8,8 +8,7 @@ function p = MRchirp(par)
 %   - w1, excitation field value (Hz)
 %   - tp, pulse duration (s)
 %   or 2 of the above and:
-%   - [phase = "chirp"] Q, adiabacitiy factor for linear sweeps
-%   - [phase = "tanh"] k, k-factor for hyperbolic sechant sweeps
+%   - Q, adiabacitiy factor
 %   or:
 %   - [amp = "custom"] "P.r", amplitude polar coordinate of the pulse
 %   - [phase = "custom"] "P.ph", phase polar coordinate of the pulse
@@ -22,7 +21,7 @@ function p = MRchirp(par)
 %   - amp, string for the amplitude modulation function of the pulse:
 %     "superGaussian" (default), "sinsmoothed", "WURST", "sech", "custom"
 %   - phase, string for the phase modulation function of the pulse:
-%     "superGaussian" (default), "chirp", "tanh", "custom"
+%     "chirp" (default), "tanh", "custom"
 %   - [amp = "WURST"] n, smoothing enveloppe exponent
 %     (= 20 by default)
 %   - [amp = "superGaussian"] n, smoothing enveloppe exponent
@@ -33,7 +32,7 @@ function p = MRchirp(par)
 %     (= 10.6/p.tp by default)
 %
 % Computed properties:
-%   - one of bw, w1, tp or Q
+%   - one of bw, w1, tp or Q (except for custom pulse)
 %   - np, number of point
 %   - TBP, time bandwidth product of the chirp
 %   - t, time frame of the pulse (s),1*np array
@@ -44,13 +43,12 @@ function p = MRchirp(par)
 %   - p, a stucture with all the input and computed properties of the 
 %   linear chirp pulse
 %
-% Configure standard chirps with phase = "superGaussian", "chirp" and
+% Configure standard chirps with phase = "chirp" and 
 % amp = "sinsmoothed", "superGaussian", "WURST"
 % Configure standard Hyperbolic Sechant (HS) pulses with phase = "tanh"
 % amp = "sech"
 % 
-% The pulse p is configured as a superGaussian by default.
-
+% The pulse p is configured as a superGaussian chirp by default.
 
 
 %% initialization 
@@ -64,13 +62,11 @@ p = par;
 if ~isfield(p, 'amp') && ~isfield(p, 'amp')
     
     p.amp = "superGaussian";
-    p.phase = "superGaussian";
+    p.phase = "chirp";
     
 elseif ~isfield(p, 'amp')
    
     if p.phase == "chirp"
-       p.amp = "sinsmoothed";
-   elseif p.phase == "superGaussian"
        p.amp = "superGaussian";
    elseif p.phase == "tanh"
        p.amp = "sech";
@@ -78,10 +74,8 @@ elseif ~isfield(p, 'amp')
    
 elseif ~isfield(p, 'phase')
     
-    if p.amp == "sinsmoothed"
+   if p.amp == "sinsmoothed" || p.amp == "superGaussian"
        p.phase = "chirp";
-   elseif p.amp == "superGaussian"
-       p.phase = "superGaussian";
    elseif p.phase == "sech"
        p.phase = "tanh";
    end
@@ -96,7 +90,7 @@ if isfield(p, 'bw')
 end
 
 % calculating last parameter
-if p.phase == "chirp" || p.phase == "superGaussian"
+if p.phase == "chirp" || p.phase == "superGaussian" || p.phase == "tanh"
     
     if ~isfield(p, 'w1')
         p.w1 = sqrt(p.bw * p.Q / (2 * pi * p.tp));
@@ -108,18 +102,6 @@ if p.phase == "chirp" || p.phase == "superGaussian"
         p.Q = p.w1^2 * 2 * pi * p.tp / p.bw;
     end
     
-elseif p.phase == "tanh"
-
-    if ~isfield(p, 'w1')
-        p.w1 = p.k * sqrt((p.bw /2 ) / p.tp);
-    elseif ~isfield(p, 'tp')
-        p.tp = (p.k / p.w1)^2 * (p.bw / 2);
-    elseif ~isfield(p, 'bw')
-        p.bw = (p.w1 / p.k)^2 * p.tp * 2;
-    elseif ~isfield(p, 'k')
-        p.k = p.w1 * sqrt(p.tp / (p.bw / 2));
-    end
-
 elseif p.phase == "custom"
     
     % no additional parameter calculation
@@ -191,12 +173,6 @@ if p.phase == "chirp"
     instant_phase_integral = (sweep_rate * t.^2) / 2 + f0 * t;
     
     p.Pph = 2 * pi * instant_phase_integral + p.phi0;
-
-elseif p.phase == "superGaussian"
-
-    p.Pph = p.phi0 + ...
-            pi * p.bw * (p.t - p.delta_t).^2 / p.tp + ...
-            2 * pi * p.delta_f * (p.t - p.delta_t);
     
 elseif p.phase == "tanh"
     
@@ -207,15 +183,12 @@ elseif p.phase == "tanh"
     p.Pph = 0;
 
     % phase calculated from instantaneous frequency integral
-    % instant_phase = 0.5*p.bw * tanh(p.B*t);
-    
-    % time shift equivalent to delta_f
-    shift = p.t * p.delta_f / p.bw;
+    % instant_freq = 0.5 * p.bw * tanh(p.B*t);
+    % instant_phase_integral = 0.5 * p.bw * (1/B) * log(cosh(B * (t))); 
 
-    instant_phase_integral = 0.5 * p.bw * (1/p.B) * ...
-                             log(cosh(p.B * (p.t - p.delta_t + shift)));
-
-    p.Pph = 2 * pi * instant_phase_integral + p.phi0;
+    p.Pph = p.phi0 + ...
+            pi * p.bw * (1/p.B) * log(cosh(p.B * (p.t - p.delta_t))) +...
+            2 * pi * p.delta_f * (p.t - p.delta_t);
 
 elseif p.phase == "custom"
     
@@ -297,7 +270,6 @@ end
 % reverse sweep case
 if isfield(par, 'bw')
    if par.bw < 0
-      disp('reversed')
       p.Cy = -p.Cy;
       [p.Ph, p.Pr] = cart2pol(p.Cx, p.Cy);
       p.bw = -p.bw;
@@ -341,7 +313,7 @@ end
 
 if isfield(par, "phase")
     
-    if par.phase == "chirp" || par.phase == "superGaussian"
+    if par.phase == "chirp" || par.phase == "tanh"
 
         if sum([isfield(par,'bw') isfield(par,'w1') ...
                 isfield(par,'tp') isfield(par,'Q')]) ~= 3
@@ -352,20 +324,6 @@ if isfield(par, "phase")
         if isfield(par,'Q')
             if ~isreal(par.Q) || par.Q < 0
                 error('Q must be a positive real number')
-            end
-        end
-
-    elseif par.phase == "tanh"
-
-        if sum([isfield(par,'bw') isfield(par,'w1') ...
-                isfield(par,'tp') isfield(par,'k')]) ~= 3
-            error(['3 of the following parameters must be defined: ' ...
-                   'bw w1 tp k'])
-        end
-
-        if isfield(par,'k')
-            if ~isreal(par.k) || par.k < 0
-                error('k must be a positive real number')
             end
         end
 
@@ -465,7 +423,7 @@ for i = 1:length(input_par)
     
     if ~ismember(input_par{i}, ...
                  ["tres", "bw", "tp", "w1", "phi0", "delta_t", ...
-                  "delta_f" , "amp", "phase", "Q", "sm", "n", "k", "B", ...
+                  "delta_f" , "amp", "phase", "Q", "sm", "n", "B", ...
                   "Pph", "Pr"])
         
         warning(['Careful, ' input_par{i} ' is not a standard parameter.'])

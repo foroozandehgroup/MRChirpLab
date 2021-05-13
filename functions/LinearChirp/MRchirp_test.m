@@ -12,7 +12,7 @@ catch error
     disp(error.message)
 end
 
-phase = ["superGaussian", "chirp", "tanh"];
+phase = ["chirp", "tanh"];
 amp = ["superGaussian", "sinsmoothed", "WURST", "sech"];
 
 for i = 1:length(phase)
@@ -28,58 +28,33 @@ for i = 1:length(phase)
         % minimal definition
         p0 = MRchirp(par);
         
-        if phase(i) == "chirp" || phase(i) == "superGaussian"
-            % Q defined - no bw
+        % Q defined - no bw
+        if phase(i) == "chirp"
             par.Q = par.w1^2 * 2 * pi * par.tp / par.bw;
-            par = rmfield(par, 'bw');
-            p1 = MRchirp(par);
+        elseif phase(i) == "tanh"
+            par.Q = 2.333689;
+        end        
+        par = rmfield(par, 'bw');
+        p1 = MRchirp(par);
 
-            % Q defined1 - no w1
-            par.bw = 300000;
-            par = rmfield(par, 'w1');
-            p2 = MRchirp(par);
-            par.w1 = 6.491401671720040e+03;
+        % Q defined1 - no w1
+        par.bw = 300000;
+        par = rmfield(par, 'w1');
+        p2 = MRchirp(par);
+        par.w1 = 6.491401671720040e+03;
 
-            % Q defined - no tp
-            par = rmfield(par, 'tp');
-            p3 = MRchirp(par);
-            par.tp = 500e-6;
+        % Q defined - no tp
+        par = rmfield(par, 'tp');
+        p3 = MRchirp(par);
+        par.tp = 500e-6;
 
-            par = rmfield(par, 'Q');
+        par = rmfield(par, 'Q');
 
-            % should be the same
-            pulses = {p0 p1 p2 p3};
-            titles = ["3 parameters" "Q defined no bw" ...
-                      "Q defined no w1"  "Q defined no tp"];
-        end
-        
-        if phase(i) == "tanh"
-            
-            % Q defined - no bw
-            par.k = 0.3747813;
-            par = rmfield(par, 'bw');
-            p1 = MRchirp(par);
-
-            % Q defined1 - no w1
-            par.bw = 300000;
-            par = rmfield(par, 'w1');
-            p2 = MRchirp(par);
-            par.w1 = 6.491401671720040e+03;
-
-            % Q defined - no tp
-            par = rmfield(par, 'tp');
-            p3 = MRchirp(par);
-            par.tp = 500e-6;
-
-            par = rmfield(par, 'k');
-
-            % should be the same
-            pulses = {p0 p1 p2 p3};
-            titles = ["3 parameters" "k defined no bw" ...
-                      "k defined no w1"  "k defined no tp"];
-        end
-        
-        
+        % should be the same
+        pulses = {p0 p1 p2 p3};
+        titles = ["3 parameters" "Q defined no bw" ...
+                  "Q defined no w1"  "Q defined no tp"];
+                
         plot_pulse(pulses, "",titles);
         sgtitle("amp=" + p0.amp + " - phase=" + p0.phase)
         

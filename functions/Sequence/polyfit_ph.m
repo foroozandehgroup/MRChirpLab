@@ -18,6 +18,10 @@ function phi_corr = polyfit_ph(pulse, phase, opt)
 %     applied to each point of the pulse (in the unsmoothed part).
 
 
+if nargin < 3
+    opt = struct();
+end
+
 grumble(pulse, phase, opt);
 
 if isfield(opt, 'polyfit_degree')
@@ -99,6 +103,16 @@ if isfield(opt, 'polyfit_degree')
             floor(opt.polyfit_degree) ~= opt.polyfit_degree || ...
             opt.polyfit_degree <= 0
         error('polyfit_degree must be an integer > 0')
+    end
+end
+
+% checking for unexpected input
+input_opt = fieldnames(opt);
+for i = 1:length(input_opt)
+    
+    if ~ismember(input_opt{i}, ...
+                 ["display_result", "display_result", "start", "stop"])        
+        warning(['Careful, ' input_opt{i} ' is not a standard parameter.'])
     end
 end
 

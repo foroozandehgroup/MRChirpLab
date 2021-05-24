@@ -23,10 +23,8 @@ par = rmfield(p,{'np' 'TBP' 't' 'Cx' 'Cy' 'Pr' 'Pph'});
 
 % prioritize modification of w1 or Q/k
 if property == "w1"
-    if p.phase == "chirp" || p.phase == "superGaussian"
+    if p.phase == "chirp" || p.phase == "tanh"
         par = rmfield(par, 'Q');
-    elseif p.phase == "tanh"
-        par = rmfield(par, 'k');
     end
 else
     par = rmfield(par, 'w1');

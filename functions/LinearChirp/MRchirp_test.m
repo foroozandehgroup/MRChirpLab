@@ -29,11 +29,7 @@ for i = 1:length(phase)
         p0 = MRchirp(par);
         
         % Q defined - no bw
-        if phase(i) == "chirp"
-            par.Q = par.w1^2 * 2 * pi * par.tp / par.bw;
-        elseif phase(i) == "tanh"
-            par.Q = 2.333689;
-        end        
+        par.Q = par.w1^2 * 2 * pi * par.tp / par.bw;      
         par = rmfield(par, 'bw');
         p1 = MRchirp(par);
 

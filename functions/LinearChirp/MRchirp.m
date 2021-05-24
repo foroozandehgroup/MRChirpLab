@@ -161,18 +161,12 @@ if p.phase == "chirp"
     
     % phase calculated from instantaneous frequency
     % d(phase)/dt = sweep_rate * t + f0 (= instant. phase.)
+    % sweep_rate = p.bw / p.tp;     
+    % instant_phase_integral = (sweep_rate * t.^2) / 2 + f0 * t;
     
-    % centred sweep by default
-    f0 = -p.bw / 2 + p.delta_f;
-    
-    sweep_rate = p.bw / p.tp;
-    
-    % integral from 0 to p.tp
-    t = p.t - p.delta_t + p.tp/2;
-    
-    instant_phase_integral = (sweep_rate * t.^2) / 2 + f0 * t;
-    
-    p.Pph = 2 * pi * instant_phase_integral + p.phi0;
+    p.Pph = p.phi0 + ...
+          pi * p.bw * (p.t - p.delta_t).^2 / p.tp + ...
+          2 * pi * p.delta_f * (p.t - p.delta_t);
     
 elseif p.phase == "tanh"
     

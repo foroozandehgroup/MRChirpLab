@@ -111,7 +111,8 @@ input_opt = fieldnames(opt);
 for i = 1:length(input_opt)
     
     if ~ismember(input_opt{i}, ...
-                 ["display_result", "display_result", "start", "stop"])        
+                 ["polyfit_degree", "display_result", ...
+                  "display_result", "start", "stop"])        
         warning(['Careful, ' input_opt{i} ' is not a standard parameter.'])
     end
 end

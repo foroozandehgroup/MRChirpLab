@@ -79,6 +79,7 @@ elseif nargin > 2
     
     subplot(1, 2, 1)
     mesh(off, B1, r')
+    zlim([-1 1])
     xlabel('\Delta\omega_0');
     ylabel("\omega_1 / \omega_1^0");
     zlabel(M_B1_comp);

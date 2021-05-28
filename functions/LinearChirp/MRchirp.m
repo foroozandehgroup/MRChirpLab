@@ -265,7 +265,7 @@ end
 if isfield(par, 'bw')
    if par.bw < 0
       p.Cy = -p.Cy;
-      [p.Ph, p.Pr] = cart2pol(p.Cx, p.Cy);
+      [p.Pph, p.Pr] = cart2pol(p.Cx, p.Cy);
       p.bw = -p.bw;
    end
 end

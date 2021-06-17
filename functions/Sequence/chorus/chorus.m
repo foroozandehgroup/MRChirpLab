@@ -104,7 +104,7 @@ end
 
 % sequence timing
 % tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min];
-tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min];
+tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min t_delay];
 
 % pulse 1: pi/2 pulse
 pulse_param.tp = tau(1);
@@ -127,17 +127,17 @@ p3 = MRchirp(pulse_param);
 seq = param; % saving all the parameters
 seq.tau = tau;
 seq.pulses = {p1, p2, p3};
-seq.total_time = p3.delta_t + p3.tp / 2 + t_delay;
+seq.total_time = sum(seq.tau);
 
 % suggested phase cycling
 ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
 ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
 ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
 
-CTP = [-1 +2 -2]; % coherence transfer pathway
+CTP = [+1 -2 +2]; % coherence transfer pathway
 phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
 
-seq.pc = 3*pi/2 * [ph1; ph2; ph3; phrec];
+seq.pc = pi/2 * [ph1; ph2; ph3; phrec];
 % no phase cycling: seq.ph_cy = [0; 0; 0; 0];
     
 if param.display_result == true
@@ -253,17 +253,11 @@ if isfield(param, 'Q90')
     if ~isreal(param.Q90) || param.Q90 <= 0
         error('Q90 must be a real positive number')
     end
-    if param.Q90 < 0.44  || param.Q90 >0.45
-        disp('Caution, Q90 is generally taken at 0.44')
-    end
 end
 
 if isfield(param, 'Q180')
     if ~isreal(param.Q180) || param.Q180 <= 0
         error('Q180 must be a real positive number')
-    end
-    if param.Q180 < 3  || param.Q180 > 5
-        disp('Caution, Q180 is generally taken between 3 and 5')
     end
 end
 

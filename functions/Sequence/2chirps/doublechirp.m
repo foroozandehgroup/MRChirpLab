@@ -237,17 +237,11 @@ if isfield(param, 'Q90')
     if ~isreal(param.Q90) || param.Q90 <= 0
         error('Q90 must be a real positive number')
     end
-    if param.Q90 < 0.44  || param.Q90 >0.45
-        disp('Caution, Q90 is generally taken at 0.44')
-    end
 end
 
 if isfield(param, 'Q180')
     if ~isreal(param.Q180) || param.Q180 <= 0
         error('Q180 must be a real positive number')
-    end
-    if param.Q180 < 3  || param.Q180 > 5
-        disp('Caution, Q180 is generally taken between 3 and 5')
     end
 end
 

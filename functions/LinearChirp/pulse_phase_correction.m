@@ -12,6 +12,8 @@ function phased_pulse = pulse_phase_correction(p, ph_corr)
 %   - phased_pulse, pulse p with added phase correction ph_corr
 
 
+grumble(p, ph_corr)
+
 if length(ph_corr) > 1
     if length(p.Pph) ~= length(ph_corr)
 
@@ -28,5 +30,16 @@ p.phi0 = p.phi0 + ph_corr;
 [p.Cx, p.Cy] = pol2cart(p.Pph, p.Pr);
 
 phased_pulse = p;
+
+end
+
+
+function grumble(p, ph_corr)
+
+if length(ph_corr) > 1
+    if size(ph_corr, 2) ~= size(p.Pph, 2)
+       error('2nd dimension missmatch between ph_corr and p.Pph')
+    end
+end
 
 end

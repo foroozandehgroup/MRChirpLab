@@ -285,9 +285,12 @@ elseif ~isreal(par.tres) || par.tres < 0
     error('tres must be a positive real number')
 end
 
-if isfield(par,'tau_p')
-    if ~isreal(par.tau_p)
+if isfield(par,'tp')
+    if ~isreal(par.tp)
         error('tp must be a real number')
+    end
+    if par.tp < par.tres
+        error('tp must be superior or equal to tres')
     end
 end
 

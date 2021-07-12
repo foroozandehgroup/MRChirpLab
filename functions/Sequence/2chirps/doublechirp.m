@@ -215,6 +215,9 @@ if isfield(param, 't90min')
     if isfield(param, 'TBPmin')
         error('t90min and t180min already input, TBPmin cannot be input')
     end
+    if param.t90min < param.tres
+        error('t90min must be superior or equal to tres')
+    end
 elseif isfield(param, 't180min')
     if ~isreal(param.t180min)
         error('t180min must be real')
@@ -222,6 +225,9 @@ elseif isfield(param, 't180min')
     if isfield(param, 'TBPmin')
         error('t90min and t180min already input, TBPmin cannot be input')
     end
+    if param.t180min < param.tres
+        error('t180min must be superior or equal to tres')
+    end 
 elseif isfield(param, 'w1max')
     if ~isreal(param.w1max) || param.w1max <= 0
         error('w1max must be a real positive number')

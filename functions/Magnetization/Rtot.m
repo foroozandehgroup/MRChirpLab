@@ -1,5 +1,5 @@
 function total_rot_mat = Rtot(Omega,offs,phi,time)
-% Returns the rotational matrix associated with a point of a linear chirp
+% Returns the rotational matrix associated with a point of a pulse
 % 
 % Inputs: pulse parameters
 %     - Omega, point B1 field strength

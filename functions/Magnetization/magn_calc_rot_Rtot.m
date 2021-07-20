@@ -11,6 +11,10 @@ function magn_fin = magn_calc_rot_Rtot(pulses, trec, ph_cy, offsets)
 % Output:
 %   - magn_fin, calculated magnetization which is output at x,y, and z for 
 %   the different offsets of off in a 2D-matrix.
+%
+% Utilizes rotational matrixes Rx and Ry and Rz to get the total rotational
+% matrix Rtot of each element of the pulse.
+% Obsolete - Rodrigues matrix implementation is faster.
 
 
 np_offs = length(offsets);

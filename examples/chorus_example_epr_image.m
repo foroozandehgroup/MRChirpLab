@@ -21,7 +21,7 @@ param.pulse_param.amp = "sinsmoothed";
 param.pulse_param.sm = 12.5;
 
 % chorus pulse sequence
-seq = chorus(param);
+seq = exc_3fs(param);
 
 % phase cycling
 ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];

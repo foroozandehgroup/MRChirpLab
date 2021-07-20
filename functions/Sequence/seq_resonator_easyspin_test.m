@@ -5,7 +5,7 @@ param.bw = 500e6;
 param.t90min = 64e-9;
 param.t180min = 64e-9;
 
-chorus_uncompensated = chorus(param);
+chorus_uncompensated = exc_3fs(param);
 
 f = load('resonator_profile_f.mat').f;
 H_f = load('resonator_profile_H_f.mat').H_f;

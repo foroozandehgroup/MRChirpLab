@@ -8,7 +8,7 @@ param.tres = 0.5e-9;
 param.pulse_param.n = 10;
 param.display_result = true;
 
-seq = chorus(param);
+seq = exc_3fs(param);
 
 % pulse shape Xepr files
 ID = 'CHORUS';

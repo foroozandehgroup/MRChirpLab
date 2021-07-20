@@ -1,4 +1,4 @@
-function chorus_test()
+function exc_3fs_test()
 
 % sequence parameters
 ch_param.bw = 300000; % bandwidth
@@ -10,7 +10,7 @@ disp('no display, no polynomial fitting (no magnetization calculation)')
 ch_param.phase_polynomial_fitting = false;
 ch_param.display_result = false;
 tic
-chorus_seq1 = chorus(ch_param);
+chorus_seq1 = exc_3fs(ch_param);
 toc
 disp('')
 
@@ -18,7 +18,7 @@ disp('display, no polynomial fitting (1 magnetization computation)')
 ch_param.phase_polynomial_fitting = false;
 ch_param.display_result = true;
 tic
-chorus_seq2 = chorus(ch_param);
+chorus_seq2 = exc_3fs(ch_param);
 toc
 disp('')
 
@@ -26,7 +26,7 @@ disp('no display and polynomial fitting (1 magnetization computation)')
 ch_param.phase_polynomial_fitting = true;
 ch_param.display_result = false;
 tic
-chorus_seq3 = chorus(ch_param);
+chorus_seq3 = exc_3fs(ch_param);
 toc
 
 disp('display and polynomial fitting (2 magnetization computation)')
@@ -34,7 +34,7 @@ ch_param.phase_polynomial_fitting = true;
 ch_param.display_result = true;
 ch_param.polyfit_start = 10;
 tic
-chorus_seq4 = chorus(ch_param);
+chorus_seq4 = exc_3fs(ch_param);
 toc
 
 disp('sinsmoothed chorus')
@@ -46,7 +46,7 @@ ch_param.polyfit_degree = 5;
 ch_param.polyfit_start = 10;
 ch_param.display_result = true;
 tic
-chorus_seq4 = chorus(ch_param);
+chorus_seq4 = exc_3fs(ch_param);
 toc
 
 end

@@ -14,4 +14,4 @@ param.display_result = true;
 param.t_delay = 50e-9;
 
 % chorus pulse sequence
-chorus = chorus(param);
+chorus = exc_3fs(param);

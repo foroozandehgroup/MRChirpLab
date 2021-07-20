@@ -25,5 +25,5 @@ param.pulse_param.sm = 10;
 
 % chorus pulse sequence
 tic
-seq = chorus(param);
+seq = exc_3fs(param);
 toc

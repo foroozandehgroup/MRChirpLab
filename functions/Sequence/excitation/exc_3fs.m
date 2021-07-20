@@ -1,27 +1,27 @@
-function seq = doublechirp(param)
-% Creates a double chirp pulse sequence for excitation
-% (Kunz scheme, Bohlen-Bodenhausen scheme)
+function seq = exc_3fs(param)
+% Creates a 3 Frequency-Swept (FS) pulse sequence for excitation
+% (compressed CHORUS - https://doi.org/10.1016/j.jmr.2019.03.007)
 % 
 % Input:
-%   - param, structure containing the parameters allowing to defined the
+%   - param, a structure containing the parameters allowing to defined the
 %   sequence
 %
 % Output:
-%   - seq, structure containing the sequence information
+%   - seq, a structure containing the sequence information
 %
 % Required fields for param:
-%   - bw, target bandwidth of the pulse sequence (Hz)
-%   - tres, time resolution of the pulse sequence (s)
-%   - one of the following:
-%       - w1max, maximum amplitude of the excitation field B1
-%       - t90min, minimum pulse duration for a 90 degree pulse(s)
-%       - t180min, minimum pulse duration for a 180 degree pulse (s)
+%   - bw, the target bandwidth of the pulse sequence (Hz)
+%   - tres, the time resolution of the pulse sequence (s)
+%   - one of the following combination):
+%       - TBPmin, the minimum time bandwidth product and w1max, the maximum
+%       amplitude of the excitation field B1
+%       - t90min and t180min, the minimum pulse duration for a 90 degree
+%       pulse and a 180 degree pulse respectively (s)
 %
-% Optional fields for parma:
-%   - TBPmin, minimum time bandwidth product if w1max is used
-%   - Q90 and Q180, adiabaticity factors of the 90 degree and 180
+% Optional fields for param:
+%   - Q90 and Q180 the adiabaticity factors of the 90 degree and 180
 %   degrees pulses respectively   
-%   - pulse_param, structure containing desired MRchirp parameters
+%   - pulse_param, a structure containing desired MRchirp parameters
 %   - phase_polynomial_fitting, a boolean to launch a magnetizaiton
 %   computation which leads to a phase correction of the sequence (set to
 %   fault by default). When set to true, these additional parameters are
@@ -29,15 +29,17 @@ function seq = doublechirp(param)
 %       - polyfit_degree
 %       - polyfit_start
 %       - polyfit_stop
-%   - display_result, boolean which allows to display the sequence and the 
-%   results of simulation/calculation (set to false by default)
+%   - display_result, a boolean which allows to display the sequence and
+%   the results of simulation/calculation (set to false by default)
+%   - t_delay to add a delay between the 180deg pulses and at the end of 
+%   the sequence (s)
 %
 % Fields contained in seq:
-%   - all the fields mentionned above (with input/default values)
-%   - tau, vector containing the duration of the pulses and delays in
+%   - all the field mentionned above (with input/default value)
+%   - tau, a vector containing the duration of the pulses and delays in
 %   order (s)
-%   - pulses, cell array containing the pulse structures (MRchirp)
-%   - total_time, total time of the pulse sequence (s)
+%   - pulses, a cell array containing the pulse structures (MRchirp)
+%   - total_time, the total time of the pulse sequence (s)
 %   - pc, a proposed phase cycle - used for possible simulations in the
 %   function
 
@@ -53,7 +55,7 @@ if ~isfield(param, 'Q180')
     param.Q180 = 5;
 end
 
-if isfield(param, 'w1max') && ~isfield(param, 'TBPmin')
+if isfield(param, 'w1') && ~isfield(param, 'TBPmin')
     param.TBPmin = 100;
 end
 
@@ -74,17 +76,18 @@ pulse_param.bw = param.bw;
 pulse_param.tres = param.tres;
 
 % values for sequence required paramters
+if isfield(param, 't90min') && isfield(param, 't180min')
+    t90min = param.t90min;
+    t180min = param.t180min;
+
+    param.TBPmin = t90min * param.bw;
+end
+
 if isfield(param, 'w1max')
     t90min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
                                  param.Q90, param.bw);
     t180min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
                                   param.Q180, param.bw);
-elseif isfield(param, 't90min')
-    t90min = param.t90min;
-    t180min = 0;
-elseif isfield(param, 't180min')
-    t180min = param.t180min;
-    t90min = 0;
 end
 
 % rounding the pulse duration values
@@ -92,16 +95,17 @@ rounding_power = ceil(log10(param.tres));
 t90min = 10^rounding_power * ceil(10^(-rounding_power) * t90min);
 t180min = 10^rounding_power * ceil(10^(-rounding_power) * t180min);
 
-% defining the sequence with the most critical pulse
-if t90min > 2*t180min
-    disp("pi/2 defined") % high RF power and high TBPmin
-    tau = [t90min 0.5*t90min 0.5*t90min];
-    param.TBPmin = t90min * param.bw;
-else    
-    disp("pi defined")
-    tau = [t180min*2 t180min t180min];
-    param.TBPmin = t180min * param.bw;
+% potential delay at the end end of the sequence added to the delay between
+% the 180 pulses
+if isfield(param, 't_delay')
+    t_delay = param.t_delay;
+else
+    t_delay = 0;
 end
+
+% sequence timing
+% tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min];
+tau = [t90min t180min+t90min/2 t90min/2+t_delay t180min t_delay];
 
 % pulse 1: pi/2 pulse
 pulse_param.tp = tau(1);
@@ -115,20 +119,31 @@ pulse_param.delta_t = tau(1) + tau(2)/2;
 pulse_param.Q = param.Q180;
 p2 = MRchirp(pulse_param);
 
-% double chirp pulse sequence
+% pulse 3: pi pulse
+pulse_param.tp = tau(4);
+pulse_param.delta_t = sum(tau(1:3)) + tau(4)/2;
+p3 = MRchirp(pulse_param);
+
+% chorus sequence
 seq = param; % saving all the parameters
 seq.tau = tau;
-seq.pulses = {p1, p2};
-seq.total_time = sum(tau);
+seq.pulses = {p1, p2, p3};
+seq.total_time = sum(seq.tau);
 
-% proposed phase cycling
-ph1 = [0 0 0 0];
-ph2 = [0 1 2 3];
+% suggested phase cycling
+ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
+ph2 = [0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3];
+ph3 = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3];
 
-CTP = [-1 +2]; % coherence transfer pathway
-phrec = phase_cycle_receiver([ph1; ph2], CTP);
+CTP = [+1 -2 +2]; % coherence transfer pathway
+phrec = phase_cycle_receiver([ph1; ph2; ph3], CTP);
 
-seq.pc = pi/2 * [ph1; ph2; phrec];
+seq.pc = pi/2 * [ph1; ph2; ph3; phrec];
+% no phase cycling: seq.ph_cy = [0; 0; 0; 0];
+    
+if param.display_result == true
+    seq_pulses_disp(seq);
+end
 
 % magnetization calculation for polynomial fitting/display
 if param.phase_polynomial_fitting == true || param.display_result == true
@@ -173,7 +188,7 @@ if param.phase_polynomial_fitting == true
     ph_corr = polyfit_ph(p1, ph, polyfit_options);
 
     % pulse 1 phase correction
-    seq.pulses{1} = pulse_phase_correction(seq.pulses{1}, -ph_corr);
+    seq.pulses{1} = pulse_phase_correction(seq.pulses{1}, ph_corr);
     
     if param.display_result == true
         
@@ -193,24 +208,33 @@ end
 function grumble(param)
 
 if ~isfield(param, 'tres')
-    error('seq_param must contain the time resolution tres (s)')
+    error('param must contain the time resolution tres (s)')
 end
 
 if ~isfield(param, 'bw')
-    error('seq_param must contain the bandwidth bw (Hz)')
+    error('param must contain the bandwidth bw (Hz)')
 elseif ~isreal(param.bw) || param.bw <= 0
-    error('seq_param.bw must be a real positive number')
+    error('param.bw must be a real positive number')
 end
 
 % definiton check for t90min and t180min
-if sum([isfield(param, 't90min') isfield(param, 't180min') isfield(param, 'w1max')]) ~= 1
-    error(['seq_param needs to contain one and one only of the' ...
-           ' following parameters: t90min, t180min, w1max.'])
-end
-
-if isfield(param, 't90min')
+if ~isfield(param, 't90min') && ~isfield(param, 'w1max')
+    error('param must contain either t90min and t180min, or w1max.')
+elseif isfield(param, 't90min') || isfield(param, 't180min')
+    if ~isfield(param, 't90min')
+        error('param must contain t90min if t180min is input')
+    end
+    if ~isfield(param, 't180min')
+        error('param must contain t180min if t90min is input')
+    end
     if ~isreal(param.t90min)
         error('t90min must be real')
+    end
+    if ~isreal(param.t180min)
+        error('t180min must be real')
+    end
+    if isfield(param, 'w1max')
+        error('t90min and t180min already input, w1max cannot be input')
     end
     if isfield(param, 'TBPmin')
         error('t90min and t180min already input, TBPmin cannot be input')
@@ -218,16 +242,9 @@ if isfield(param, 't90min')
     if param.t90min < param.tres
         error('t90min must be superior or equal to tres')
     end
-elseif isfield(param, 't180min')
-    if ~isreal(param.t180min)
-        error('t180min must be real')
-    end
-    if isfield(param, 'TBPmin')
-        error('t90min and t180min already input, TBPmin cannot be input')
-    end
     if param.t180min < param.tres
         error('t180min must be superior or equal to tres')
-    end 
+    end
 elseif isfield(param, 'w1max')
     if ~isreal(param.w1max) || param.w1max <= 0
         error('w1max must be a real positive number')
@@ -268,8 +285,8 @@ input_param = fieldnames(param);
 for i = 1:length(input_param)
     if ~ismember(input_param{i},["bw", "tres", "TBPmin", "w1max", ...
             "t90min", "t180min", "Q90" , "Q180", "pulse_param", ...
-            "display_result", "phase_polynomial_fitting", ...
-            "polyfit_degree", "polyfit_start", "polyfit_stop",])
+            "display_result" , "phase_polynomial_fitting", ...
+            "polyfit_degree", "polyfit_start", "polyfit_stop", "t_delay"])
         warning(['Careful, ' input_param{i} ' is not a standard parameter.'])
     end
 end

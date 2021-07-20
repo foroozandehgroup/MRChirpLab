@@ -26,7 +26,7 @@ ch_param.tres = 5e-7;
 ch_param.phase_polynomial_fitting = false;
 ch_param.display_result = false;
 
-chorus_seq = chorus(ch_param);
+chorus_seq = exc_3fs(ch_param);
 
 plot_seq(chorus_seq, 'amplitude')
 plot_seq(chorus_seq, 'cartesian')

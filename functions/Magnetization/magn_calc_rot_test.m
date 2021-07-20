@@ -15,7 +15,7 @@ param.tres = 0.625e-9;
 param.display_result = false;
 
 % chorus pulse sequence
-seq = chorus(param);
+seq = exc_3fs(param);
 
 % phase cycling
 ph1 = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];

@@ -2,7 +2,7 @@ function seq_add_delay_test()
 
 par = struct('t90min', 350e-6, 't180min', 684e-6, 'bw', 200e3, 'tres', 0.5e-6);
 
-seq0 = chorus(par);
+seq0 = exc_3fs(par);
 
 seq1 = seq_add_delay(seq0, 350e-6, 1);
 seq2 = seq_add_delay(seq0, 350e-6, 2);

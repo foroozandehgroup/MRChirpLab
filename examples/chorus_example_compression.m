@@ -27,7 +27,7 @@ par.pulse_param.n = 40; % superGaussian index
 
 % chorus pulse sequence
 tic
-chorus1 = chorus(par);
+chorus1 = exc_3fs(par);
 toc
 
 
@@ -52,6 +52,6 @@ par2.pulse_param.sm = 5; % smoothing percentage
 
 % chorus pulse sequence
 tic
-chorus2 = chorus(par2);
+chorus2 = exc_3fs(par2);
 toc
 

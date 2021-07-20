@@ -1,6 +1,6 @@
 function p = MRchirp(par)
 % Returns a structure containing the different properties of a 
-% phase-modulated pulse (frequency-modulated/frequency-swept pulse)
+% Frequency-swept (FS) pulse
 %
 % Input (properties in the structure param):
 %   Required:

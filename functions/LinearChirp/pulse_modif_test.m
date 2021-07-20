@@ -4,9 +4,9 @@ par.bw = 300e3;
 par.tp = 1000e-6;
 par.Q = 5;
 par.tres = 0.5e-6;
-par.type = "superGaussian";
+par.amp = "superGaussian";
 
-p0 = LinearChirp(par);
+p0 = MRchirp(par);
 
 p1 = pulse_modif(p0, "w1", 20e3);
 p2 = pulse_modif(p0, "bw", 100e3);
@@ -19,7 +19,7 @@ p7 = pulse_modif(p0, "n", 16);
 plot_pulse({p0, p1, p2, p3, p4, p5, p6, p7});
 plot_pulse({p0, p1, p2, p3, p4, p5, p6, p7}, 'polar');
 
-p0 = pulse_modif(p0, "type", "sinsmoothed");
+p0 = pulse_modif(p0, "amp", "sinsmoothed");
 
 p1 = pulse_modif(p0, "w1", 20e3);
 p2 = pulse_modif(p0, "bw", -p0.bw); % reverse sweep

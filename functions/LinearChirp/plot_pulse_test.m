@@ -4,7 +4,8 @@ function plot_pulse_test()
 param.bw = 150000;
 param.tp = 300e-6;
 param.w1 = 5e+03;
-pulse1 = LinearChirp(param);
+param.tres = 0.5e-6;
+pulse1 = MRchirp(param);
 
 plot_pulse(pulse1)
 plot_pulse(pulse1, "")
@@ -18,7 +19,8 @@ param.bw = 600000;
 param.tp = 600e-6;
 param.w1 = 10e+03;
 param.n = 4;
-pulse2 = LinearChirp(param);
+param.tres = 0.5e-6;
+pulse2 = MRchirp(param);
 
 pulses = {pulse1 pulse2};
 

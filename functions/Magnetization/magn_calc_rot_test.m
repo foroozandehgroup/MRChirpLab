@@ -32,7 +32,8 @@ n_offs = 101;
 offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
 
 tic
-final_magn1 = magn_calc_rot(seq.pulses, seq.total_time, ph_cy, offs);
+opt.pc = ph_cy;
+final_magn1 = magn_calc_rot(seq.pulses, seq.total_time, offs, opt);
 toc
 plot_magn(final_magn1, offs)
 

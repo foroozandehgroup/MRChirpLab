@@ -20,7 +20,7 @@ param.polyfit_degree = 10;
 param.display_result = true;
 
 % sequence optional pulses parameters
-param.pulse_param.type = "sinsmoothed";
+param.pulse_param.amp = "sinsmoothed";
 param.pulse_param.sm = 10;
 
 % chorus pulse sequence

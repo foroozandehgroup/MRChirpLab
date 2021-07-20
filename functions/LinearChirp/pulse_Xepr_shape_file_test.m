@@ -7,7 +7,7 @@ param.w1 = 40e3;
 param.tres = 0.625e-9;
 
 % pulse
-pulse = LinearChirp(param);
+pulse = MRchirp(param);
 
 % pulse Xepr shape
 shape_pulse = pulse_Xepr_format(pulse);

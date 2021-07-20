@@ -17,7 +17,7 @@ param.polyfit_degree = 5;
 param.display_result = true;
 
 % sequence optional pulses parameters
-param.pulse_param.type = "sinsmoothed";
+param.pulse_param.amp = "sinsmoothed";
 param.pulse_param.sm = 12.5;
 
 % chorus pulse sequence
@@ -36,7 +36,7 @@ ph_cy = pi/2 * [ph1; ph2; ph3; phrec];
 % offsets and time axis
 n_offs = 201;
 offs = linspace(-seq.bw/2, seq.bw/2, n_offs);
-t = 0:param.tres:seq.total_time;
+t = 0:param.tres:800e-9;
 
 % -------------------------------------------------------------------------
 % CHORUS magnetization computation and plot

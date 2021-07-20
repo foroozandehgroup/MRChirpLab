@@ -38,7 +38,7 @@ chorus_seq4 = chorus(ch_param);
 toc
 
 disp('sinsmoothed chorus')
-ch_param.pulse_param.type = "sinsmoothed";
+ch_param.pulse_param.amp = "sinsmoothed";
 ch_param.pulse_param.sm = 5;
 
 ch_param.phase_polynomial_fitting = true;

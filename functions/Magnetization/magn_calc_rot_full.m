@@ -1,6 +1,6 @@
 function magn_fin = magn_calc_rot_full(pulses, tcalc, ph_cy, offsets)
 % Calculates the magnetization at the times of tcalc after applying the
-% list of chirps pulses
+% list of pulses
 %
 % Input: 
 %   - pulses, cell array containing pulses

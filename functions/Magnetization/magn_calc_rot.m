@@ -1,6 +1,6 @@
 function magn_end = magn_calc_rot(pulses, tend, off, opt)
 % Calculates the magnetization at time tend after applying the list of
-% chirps pulses
+% pulses
 %
 % Input: 
 %   - pulses, cell array containing pulses

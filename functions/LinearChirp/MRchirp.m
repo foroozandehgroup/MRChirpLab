@@ -4,6 +4,8 @@ function p = MRchirp(par)
 %
 % Input (properties in the structure param):
 %   Required:
+%   - tres, time resolution of the pulse (s)
+%   choose
 %   - bw, bandwidth (Hz) - if negative, reversed sweep
 %   - w1, excitation field value (Hz)
 %   - tp, pulse duration (s)
@@ -17,7 +19,7 @@ function p = MRchirp(par)
 %   - delta_t, time offset or the pulse center position (s)
 %   - phi0, phase offset (rad)
 %   - delta_f, freqency offset (Hz)
-%   - tres, time resolution of the pulse (s)
+
 %   - amp, string for the amplitude modulation function of the pulse:
 %     "superGaussian" (default), "sinsmoothed", "WURST", "sech", "custom"
 %   - phase, string for the phase modulation function of the pulse:
@@ -187,7 +189,11 @@ elseif p.phase == "tanh"
 elseif p.phase == "custom"
     
     % Pph input by the user
-
+    
+    if length(par.Pph) ~= p.np
+        error("length(Pph) does not match tp and tres.")
+    end
+    
 end
 
 %% polar coordinates Ppr: amplitude-modulation function
@@ -239,6 +245,10 @@ elseif p.amp == "sech"
 elseif p.amp == "custom"
     
     % Pr input by the user
+    
+    if length(par.Pr) ~= p.np
+        error("length(Pr) does not match tp and tres.")
+    end
     
 end
 
@@ -328,8 +338,6 @@ if isfield(par, "phase")
 
         if ~isfield(par, 'Pph')
             error('Pph required for custom pulse')
-        elseif length(par.Pph) ~= par.tp/par.tres
-            error("legnth(Pph) does not match tp and tres.")
         end
         
     else
@@ -382,8 +390,6 @@ if isfield(par, "amp")
 
         if ~isfield(par, 'Pr')
             error('Pr required for custom pulse')
-        elseif length(par.Pr) ~= par.tp/par.tres
-            error("legnth(Pr) does not match tp and tres.")
         end
         
     else

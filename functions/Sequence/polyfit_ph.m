@@ -6,7 +6,8 @@ function phi_corr = polyfit_ph(pulse, phase, opt)
 %     - pulse, the pulse onto which to apply the phase correction
 %     - phase, vector containing the phases of each magnetization point
 %     - opt, field containing optional parameters:
-%           - polyfit_degree, degree of the polynomial for the fit
+%           - polyfit_degree, degree of the polynomial for the fit (6 by 
+%             default)
 %           - display_result, option to set to true to display the polyfit
 %             results
 %           - start, percentage between 0 and 100 corresponding to the

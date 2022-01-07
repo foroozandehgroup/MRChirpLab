@@ -1,13 +1,14 @@
 function MRchirp_test()
 
 par.tres = 0.5e-6;
-
 par.bw = 300000;
 par.tp = 500e-6;
 
 % not enough inputs test
+disp(' ')
+disp('--- Test warning for unsufficient number of input ---')
 try
-    LinearChirp(par);
+    MRchirp(par);
 catch error
     disp(error.message)
 end
@@ -29,7 +30,11 @@ for i = 1:length(phase)
         p0 = MRchirp(par);
         
         % Q defined - no bw
-        par.Q = par.w1^2 * 2 * pi * par.tp / par.bw;      
+        if phase(i) == "chirp"
+            par.Q = par.w1^2 * 2 * pi * par.tp / par.bw;      
+        elseif phase(i) == "tanh"
+            par.Q = 4 * pi * par.w1^2 / (par.bw * (10.6/par.tp));
+        end
         par = rmfield(par, 'bw');
         p1 = MRchirp(par);
 
@@ -84,21 +89,20 @@ end
 
 % optional parameters specific to amp/phase values
 par.phase = "chirp";
-
 par.amp = "sinsmoothed";
 
 p_sinsmoothed_sm10 = MRchirp(par);
-p.sm = 20;
+par.sm = 20;
 p_sinsmoothed_sm20 = MRchirp(par);
 
 par.amp = "WURST";
 p_WURST_n20 = MRchirp(par);
-p.n = 80;
+par.n = 80;
 p_WURST_n80 = MRchirp(par);
 
 par.amp = "superGaussian";
 p_sG_n40 = MRchirp(par);
-p.n = 20;
+par.n = 20;
 p_sG_n20 = MRchirp(par);
 
 pulses = {p_sinsmoothed_sm10 p_sinsmoothed_sm20 ...
@@ -109,8 +113,24 @@ titles = ["p_sinsmoothed_sm10" "p_sinsmoothed_sm20" ...
           "p_sG_n40" "p_sG_n20"];
 plot_pulse(pulses, "", titles);
 
-% test warning for high number of points
+% B/tp/k for HS pulses
+par.phase = "tanh";
+par.amp = "sech";
+HS_tp = MRchirp(par);
+par.k = 5.3;
+HS_k_5 = MRchirp(par);
+par = rmfield(par, 'tp');
+par.B = 5.3/500e-6;
+HS_B_k_5 = MRchirp(par);
+
+pulses = {HS_tp HS_k_5 HS_B_k_5};
+titles = ["HS_tp" "HS_k_5" "HS_B_k_5"];
+plot_pulse(pulses, "", titles);
+
+disp(' ')
+disp('--- Test warning for high number of points ---')
 par.tres = 5e-9;
-pulse_low_tres = LinearChirp(par);
+pulse_low_tres = MRchirp(par);
+disp(' ')
 
 end

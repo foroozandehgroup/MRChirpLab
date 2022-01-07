@@ -30,6 +30,10 @@ else
     par = rmfield(par, 'w1');
 end
 
+if p.amp == "sech" || p.phase == "tanh"
+    par = rmfield(par, 'B');
+end
+
 % modifying the property value
 par.(property) = value;
 

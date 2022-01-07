@@ -8,7 +8,7 @@ function p = MRchirp(par)
 %   choose
 %   - bw, bandwidth (Hz) - if negative, reversed sweep
 %   - w1, excitation field value (Hz)
-%   - tp, pulse duration (s)
+%   - tp, pulse duration (s) - can be replaced by B for tanh phase
 %   or 2 of the above and:
 %   - Q, adiabacitiy factor
 %   or:
@@ -19,7 +19,6 @@ function p = MRchirp(par)
 %   - delta_t, time offset or the pulse center position (s)
 %   - phi0, phase offset (rad)
 %   - delta_f, freqency offset (Hz)
-
 %   - amp, string for the amplitude modulation function of the pulse:
 %     "superGaussian" (default), "sinsmoothed", "WURST", "sech", "custom"
 %   - phase, string for the phase modulation function of the pulse:
@@ -31,7 +30,9 @@ function p = MRchirp(par)
 %   - [amp = "sinsmoothed"] sm, smoothing percentage of the chirp
 %     (= 10 by default)
 %   - [amp = "sech" or phase = "tanh"] B, smoothing parameter 
-%     (= 10.6/p.tp by default)
+%     (= k / tp)
+%   - [amp = "sech" or phase = "tanh"] k, smoothing parameter
+%     (10.6 by default)
 %
 % Computed properties:
 %   - one of bw, w1, tp or Q (except for custom pulse)
@@ -92,7 +93,7 @@ if isfield(p, 'bw')
 end
 
 % calculating last parameter
-if p.phase == "chirp" || p.phase == "superGaussian" || p.phase == "tanh"
+if p.phase == "chirp" || p.phase == "superGaussian"
     
     if ~isfield(p, 'w1')
         p.w1 = sqrt(p.bw * p.Q / (2 * pi * p.tp));
@@ -103,6 +104,31 @@ if p.phase == "chirp" || p.phase == "superGaussian" || p.phase == "tanh"
     elseif ~isfield(p, 'Q')
         p.Q = p.w1^2 * 2 * pi * p.tp / p.bw;
     end
+    
+elseif p.phase == "tanh"
+
+    if ~isfield(p, 'k')
+        p.k = 10.6;
+    end
+    
+    if ~isfield(p, 'B') && isfield(par, 'tp')
+        p.B = p.k/p.tp;
+    end
+    
+    if ~isfield(p, 'w1')
+        p.w1 = sqrt(p.bw * p.Q *p.B / (4 * pi));
+    elseif ~isfield(p, 'B')
+        p.B = 4 * pi * p.w1^2 / (p.Q * p.bw);
+    elseif ~isfield(p, 'bw')
+        p.bw = 4 * pi * p.w1^2 / (p.Q * p.B);
+    elseif ~isfield(p, 'Q')
+        p.Q = 4 * pi * p.w1^2 / (p.bw * p.B);
+    end
+    
+    if ~isfield(p, 'tp')
+        p.tp = p.k/p.B;
+    end
+
     
 elseif p.phase == "custom"
     
@@ -171,10 +197,6 @@ if p.phase == "chirp"
           2 * pi * p.delta_f * (p.t - p.delta_t);
     
 elseif p.phase == "tanh"
-    
-    if ~isfield(p,'B')
-        p.B = 10.6/p.tp;
-    end
     
     p.Pph = 0;
 
@@ -316,11 +338,17 @@ if isfield(par,'bw')
     end
 end
 
+if isfield(par, 'B')
+    if ~isreal(par.B) || par.B <= 0
+        error('B must be a positive real number for sech pulse.')
+    end
+end
+
 %% pulse types input checks
 
 if isfield(par, "phase")
     
-    if par.phase == "chirp" || par.phase == "tanh"
+    if par.phase == "chirp"
 
         if sum([isfield(par,'bw') isfield(par,'w1') ...
                 isfield(par,'tp') isfield(par,'Q')]) ~= 3
@@ -333,7 +361,29 @@ if isfield(par, "phase")
                 error('Q must be a positive real number')
             end
         end
-
+        
+    elseif par.phase == "tanh"
+       
+       if isfield(par, 'tp') || isfield(par, 'B')
+           if isfield(par, 'tp') && isfield(par, 'B')
+               error('Only one of tp and B should be input.')
+           end
+           if sum([isfield(par,'bw') isfield(par,'w1') ...
+                   isfield(par,'Q')]) ~= 2
+                error(['Only 2 of the following parameters must be ' ...
+                      'defined in addtion to tp or B: bw w1 Q'])
+           end           
+       elseif ~isfield(par,'bw') && ~isfield(par,'w1') && ~isfield(par,'Q')
+            error(['Without tp or B, the following parameters ' ...
+                   'must be defined: bw w1 Q'])
+       end
+       
+       if isfield(par, 'k')
+           if ~isreal(par.k) || par.k <= 0
+               error('k must be a positive real number for sech pulse.')
+           end
+       end
+       
     elseif par.phase == "custom"
 
         if ~isfield(par, 'Pph')
@@ -381,8 +431,9 @@ if isfield(par, "amp")
 
         if isfield(par, 'B')
             if ~isreal(par.B) || par.B <= 0
-                error(['B, the factor determining the smoothing enveloppe must' ...
-                       ' be a positive real number for sech pulse.'])
+                error(['B, the factor determining the smoothing ' ...
+                       'enveloppe must be a positive real number ' ...
+                       'for sech pulse.'])
             end
         end
 
@@ -426,7 +477,7 @@ for i = 1:length(input_par)
     
     if ~ismember(input_par{i}, ...
                  ["tres", "bw", "tp", "w1", "phi0", "delta_t", ...
-                  "delta_f" , "amp", "phase", "Q", "sm", "n", "B", ...
+                  "delta_f" , "amp", "phase", "Q", "sm", "n", "B", "k", ...
                   "Pph", "Pr"])
         
         warning(['Careful, ' input_par{i} ' is not a standard parameter.'])

@@ -48,7 +48,7 @@ for i = 1:length(seq.pulses)
         if nargin == 5
             pulse2save = pulse_resonator_easyspin(pulse2save, ...
                                 resonator.f, resonator.H_f, resonator.nu);
-            pulse2save.type = pulse2save.type + "_resonator compensation";
+            pulse2save.type = pulse2save.phase + "_resonator compensation";
             
             additional_information = ['resonator compensation centrered'...
                                       ' at ' num2str(resonator.nu) 'GHz'];   

@@ -77,7 +77,7 @@ elseif ~isfield(p, 'amp')
    
 elseif ~isfield(p, 'phase')
     
-   if p.amp == "sinsmoothed" || p.amp == "superGaussian"
+   if p.amp == "sinsmoothed" || p.amp == "superGaussian" || p.amp == "WURST"
        p.phase = "chirp";
    elseif p.phase == "sech"
        p.phase = "tanh";

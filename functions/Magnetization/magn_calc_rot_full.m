@@ -48,7 +48,7 @@ for npc = 1:length(ph_cy(1,:)) % phase cycling loop
             for m = 1:pulses{i}.np
                 i_t = i_t + 1;
                 magn_fin_pc(:, i_t, noffs, npc) = ...
-                    Rrod(2*pi*pulses{i}.Cx(m), 2*pi*pulses{i}.Cy(m), offsets(noffs), pulses{i}.tres) * ...
+                    Rrod(2*pi*pulses{i}.Cx(m), 2*pi*pulses{i}.Cy(m), 2*pi*offsets(noffs), pulses{i}.tres) * ...
                     magn_fin_pc(:, i_t-1, noffs, npc);
                 t = t + pulses{i}.tres;
             end
@@ -68,7 +68,7 @@ for npc = 1:length(ph_cy(1,:)) % phase cycling loop
             magn_fin_pc(:, i_t, noffs, npc) = ...
                 Rz(2 * pi * offsets(noffs) * pulses{1}.tres) * ...
                 magn_fin_pc(:, i_t-1, noffs, npc);
-            t = t + pulses{1}.tres;
+            t = t + pulses{i}.tres;
         end
         
         % receiver phase (applied at each time and offset)

@@ -189,6 +189,12 @@ if isfield(param, 'display_result')
     end
 end
 
+if isfield(param, 'pulse_param')
+    if ~isstruct(param.pulse_param)
+        error('pulse_param must be a structure')
+    end
+end
+
 % checking for unexpected input
 input_param = fieldnames(param);
 for i = 1:length(input_param)

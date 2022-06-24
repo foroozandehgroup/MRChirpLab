@@ -14,7 +14,7 @@ opt.magn_init = repmat([0,1,0]', 1, n_off);
 
 opt.pc = seq.pc;
 
-opt.B1 = linspace(0.5, 1.5, 31);
+opt.B1 = linspace(0.5, 1.5, 16);
 
 disp('Magnetization computation...')
 final_magn = magn_calc_rot(seq.pulses, seq.total_time, off, opt);

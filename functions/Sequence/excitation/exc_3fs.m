@@ -149,7 +149,8 @@ end
 if param.phase_polynomial_fitting == true || param.display_result == true
     
     % offsets
-    off = linspace(-seq.bw/2, seq.bw/2, 101);
+    off = linspace(-seq.bw/2+seq.pulses{1}.delta_f, ...
+                   seq.bw/2+seq.pulses{1}.delta_f, 101);
     
     opt.pc = seq.pc;
     
@@ -163,7 +164,6 @@ end
 
 %  polynomial fitting for phase correction
 if param.phase_polynomial_fitting == true
-    
 
     % polyfit options
     if ~isfield(param, 'polyfit_degree')

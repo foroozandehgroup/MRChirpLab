@@ -134,7 +134,8 @@ seq.pc = pi/2 * [ph1; ph2; phrec];
 if param.phase_polynomial_fitting == true || param.display_result == true
     
     % offsets
-    off = linspace(-seq.bw/2, seq.bw/2, 101);
+    off = linspace(-seq.bw/2+seq.pulses{1}.delta_f, ...
+                   seq.bw/2+seq.pulses{1}.delta_f, 101);
     
     opt.pc = seq.pc;
     

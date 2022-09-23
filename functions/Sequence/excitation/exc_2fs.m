@@ -74,11 +74,11 @@ pulse_param.bw = param.bw;
 pulse_param.tres = param.tres;
 
 % values for sequence required paramters
-if isfield(param, 'w1max')
-    t90min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
-                                 param.Q90, param.bw);
-    t180min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
-                                  param.Q180, param.bw);
+if isfield(param, 'w1max')      
+    pulse_param.Q = param.Q90;
+    t90min = w1max_TBPmin_MRChirp(pulse_param, param.w1max, param.TBPmin);
+    pulse_param.Q = param.Q180;
+    t180min = w1max_TBPmin_MRChirp(pulse_param, param.w1max, param.TBPmin);
 elseif isfield(param, 't90min')
     t90min = param.t90min;
     t180min = 0;

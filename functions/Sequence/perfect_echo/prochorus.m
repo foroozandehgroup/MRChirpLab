@@ -1,5 +1,5 @@
 function seq = prochorus(param)
-% create a perfect echo chorus (prochorus) pulse sequence
+% Creates a perfect echo chorus (prochorus) pulse sequence
 % 
 % Input:
 %   - param, a structure containing the parameters allowing to defined the
@@ -112,10 +112,10 @@ if isfield(param, 't90min') && isfield(param, 't180min')
 end
 
 if isfield(param, 'w1max')
-    t90min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
-                                   param.Q90, param.bw);
-    t180min = w1max_TBP_compression(param.w1max, param.TBPmin, ...
-                                    param.Q180, param.bw);
+    pulse_param.Q = param.Q90;
+    t90min = w1max_TBPmin_MRChirp(pulse_param, param.w1max, param.TBPmin);
+    pulse_param.Q = param.Q180;
+    t180min = w1max_TBPmin_MRChirp(pulse_param, param.w1max, param.TBPmin);
 end
 
 % rounding the pulse duration values

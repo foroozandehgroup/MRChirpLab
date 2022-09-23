@@ -57,7 +57,11 @@ if display_result == true
     
     plot_seq(seq)
     plot_pulse(seq.p)
-    
+
+    % offsets
+    n_off = 101;
+    off = linspace(-seq.bw/2, seq.bw/2, n_off);
+
     opt.magn_init = repmat([0,1,0]', 1, n_off);
     
     magn = magn_calc_rot_sum(seq.pulses, seq.total_time, off, opt);

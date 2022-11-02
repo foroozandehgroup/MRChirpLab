@@ -1,5 +1,5 @@
 function p = pulse_modif(p, property, value)
-% Modify the property of a phase-modulated pulse
+% Modifies a property of a frequency-swept pulse
 %
 % Input:
 %   - p, pulse

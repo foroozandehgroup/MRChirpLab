@@ -1,6 +1,6 @@
 function shape = pulse_Xepr_format(pulse)
-% Creates a matrix in the format of pulses used by Xepr from a pulse
-% structure
+% Creates a matrix from a pulse structure in the format of an Xepr pulse
+% shape
 %
 % Input:
 %   - pulse, pulse to extract the shape from

@@ -1,5 +1,5 @@
 function seq =  KB_cpmg(param)
-% Creates a KB CPMG pulse sequence
+% Creates a KB-CPMG pulse sequence
 % 
 % Input:
 %   - param, a structure containing the parameters allowing to defined the

@@ -1,5 +1,5 @@
 function frequency_offset_pulse = pulse_delta_f_correction(p, delta_f_corr)
-% Add the frequency offset delta_f to the pulse p
+% Adds a frequency offset delta_f to a pulse p
 %
 % Input:
 %   - p, pulse

@@ -1,5 +1,5 @@
 function seq = hard_perfectecho(tp90, tau_echo)
-% Perfect echo sequence with hard pulses 90x-180y-90y-180y
+% Creates a perfect echo sequence with hard pulses 90x-180y-90y-180y
 %
 % Input (properties in the structure param):
 %   Required:

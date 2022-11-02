@@ -1,5 +1,5 @@
 function seq = hard90(tp, tres)
-% Sequence with a single hard 90 degreee pulse
+% Creates a sequence with a single hard 90 degree pulse
 %
 % Input:
 %   - tp, duration of the pulse

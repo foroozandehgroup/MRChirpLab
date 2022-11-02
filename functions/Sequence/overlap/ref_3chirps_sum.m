@@ -1,7 +1,33 @@
 function seq = ref_3chirps_sum(param, param_sum)
+% Creates an overlapped version of ref_3fs
+% 
+% Input:
+%   - param, a structure containing the parameters allowing to defined the
+%   sequence
+%   - pulse_param, a structure containing the parameters of the overlap:
+%
+% Required fields for param:
+%   - see help of non-overlapped sequence function
+%
+% Required fields for param_sum
+%   - param_sum.overlap, the overlap duration (s)
+%
+% Optional fields for param_sum
+%   - phase_ph_opt, a boolean to launch an optimization which leads to a 
+%   phase correction of the sequence (set to faulse by default).
+%   Optional fields:
+%       - phase_opt_alpha, the weigth of the phase variance in the cost
+%       function
+%   - display_result, a boolean which allows to display the sequence and
+%   the results of simulation/calculation (set to false by default)
+%
+% Fields contained in seq:
+%   - all the field mentionned above (with input/default value)
+%   - all the fields from the non-overlapped sequence (see help of 
+%     non-overlapped sequence function)
+%   - p, the waveform of the overlapped pulse
 
-
-%% initialization
+%% initialization with 3 frequency-swept pulses refocusing scheme
 
 seq = ref_3fs(param);
 

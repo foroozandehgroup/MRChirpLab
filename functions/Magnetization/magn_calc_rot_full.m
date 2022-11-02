@@ -1,5 +1,5 @@
 function magn_fin = magn_calc_rot_full(pulses, tcalc, ph_cy, offsets)
-% Calculates the magnetization at the times of tcalc after applying the
+% Calculates the magnetization over the times of tcalc after applying a
 % list of pulses
 %
 % Input: 

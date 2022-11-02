@@ -1,6 +1,6 @@
 function total_rot_mat = Rrod(Cx_t, Cy_t, offs, delta_t)
-% Returns the rotational matrix associated with a point of a linear chirp
-% (or segment of the chirp)
+% Returns the rotational matrix associated with a point of a pulse (or 
+% segment of the pulse for FS and/or AM pulses)
 % 
 % Uses Rodrigues formula
 %

@@ -1,5 +1,5 @@
 function seq = chorus_cpmg(param)
-% Creates a CPMG chorus pulse sequence
+% Creates a CHORUS-CPMG pulse sequence
 % 
 % Input:
 %   - param, a structure containing the parameters allowing to defined the

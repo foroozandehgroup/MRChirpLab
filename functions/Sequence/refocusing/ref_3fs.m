@@ -1,5 +1,5 @@
 function seq = ref_3fs(param)
-% Creates a refocusing pulse sequence with 3 chirps
+% Creates a refocusing pulse sequence with 3 FS pulses
 % 
 % Input:
 %   - param, a structure containing the parameters allowing to defined the

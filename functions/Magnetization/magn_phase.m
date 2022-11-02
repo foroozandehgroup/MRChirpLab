@@ -1,5 +1,5 @@
 function ph = magn_phase(magn)
-% returns the phase of the magnetization magn in a continuous vector ph
+% Returns the phase of the magnetization magn as a vector ph
 %
 % Input:
 %   - magn, magnetization on x, y and z for a certain number of offsets

@@ -1,6 +1,6 @@
 function compensated_pulse = pulse_resonator_easyspin(p, f, H_f, nu, opt_simulate)
-% [EPR] Makes the pulse compensate for the resonator effects with the
-% resonator function from EasySpin
+% [EPR] Makes the pulse compensate for resonator effects with the resonator
+% function from EasySpin
 % 
 % Input:
 %   - p, pulse to be compensated

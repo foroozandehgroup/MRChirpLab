@@ -1,5 +1,5 @@
 function phased_pulse = pulse_phase_correction(p, ph_corr)
-% Add the phase ph_corr to the pulse p
+% Adds a phase ph_corr to a pulse p
 %
 % Input:
 %   - p, pulse

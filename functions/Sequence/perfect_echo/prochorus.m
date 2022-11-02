@@ -28,12 +28,12 @@ function seq = prochorus(param)
 %   - phase_ph_opt, a boolean to launch an optimization which leads to a 
 %   phase correction of the sequence (set to faulse by default).
 %   Optional fields:
-%       - ph_opt_parnb the number of parameters to optimize - can be either
+%       - ph_opt_parnb, the number of parameters to optimize - can be either
 %       4 for optimization with the 3rd and 6th pulse or 8 to add the 1st
 %       and 4th pulse (set to 4 by default)
-%       - ph_opt_alpha the weigth of the phase variance in the cost
+%       - ph_opt_alpha, the weigth of the phase variance in the cost
 %       function
-%       - ph_opt_x used as optimization solution (no optimization run)
+%       - ph_opt_x, used as optimization solution (no optimization run)
 %
 % Fields contained in seq:
 %   - all the field mentionned above (with input/default value)

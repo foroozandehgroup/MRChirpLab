@@ -1,6 +1,6 @@
 function shape = pulse_TopSpin_format(p)
-% Creates a matrix in the format of pulses used by Bruker from a pulse
-% structure
+% Creates a matrix from a pulse structure in the format of a TopSpin pulse
+% shape
 %
 % Input:
 %   - p, pulse to extract the shape from

@@ -1,4 +1,15 @@
 function seq_sum_2TopSpin(seq, ID_seq)
+% Saves a sequence pulses as TopSpin shape files in the current directory
+%
+% Input:
+%   - seq, sequence to be saved
+%   - ID, the identification of the sequence
+%
+% Files generated in created directory:
+%   - pulses shapes files, in particular all phase necessary to phase cycle
+%   - text file with the sequence main parameters
+%   - figures opened when the function is called (are assumed to be linked
+%   to the sequence). Plots of each pulse are previoulsy generated.
 
 % directory creation at path
 total_time = ['_' num2str(seq.total_time * 1e3) 'ms'];

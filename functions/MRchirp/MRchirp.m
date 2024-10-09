@@ -77,7 +77,8 @@ elseif ~isfield(p, 'amp')
    
 elseif ~isfield(p, 'phase')
     
-   if p.amp == "sinsmoothed" || p.amp == "superGaussian" || p.amp == "WURST"
+   if p.amp == "sinsmoothed" || p.amp == "superGaussian" ...
+		|| p.amp == "WURST" || p.amp == "linearsmoothed"
        p.phase = "chirp";
    elseif p.phase == "sech"
        p.phase = "tanh";
@@ -240,7 +241,7 @@ elseif p.amp == "superGaussian"
     p.Pr = p.w1 * ...
            exp(-(2^(p.n + 2)) * ((p.t - p.delta_t) / p.tp).^p.n);
 
-elseif p.amp == "sinsmoothed"
+elseif p.amp == "sinsmoothed" || p.amp == "linearsmoothed"
     
     % default smoothing percentage value
     if ~isfield(p, 'sm')
@@ -249,10 +250,16 @@ elseif p.amp == "sinsmoothed"
     
     n_sm = floor((p.np * p.sm) / 100); % number of points smoothed
     n_unsm = p.np - (2 * n_sm); % number of points unsmoothed
-    
-    % amplitude apodized with a sine function taken from 0 to pi/2
-    unsmoothed_middle = p.w1 * ones(1, n_unsm);
-    smoothed_side = p.w1 * (sin(linspace(0, pi/2, n_sm)));
+
+    if p.amp == "sinsmoothed"
+        % amplitude apodized with a sine function taken from 0 to pi/2
+        unsmoothed_middle = p.w1 * ones(1, n_unsm);
+        smoothed_side = p.w1 * (sin(linspace(0, pi/2, n_sm)));
+    elseif p.amp == "linearsmoothed"
+        % simple linear ramp
+        unsmoothed_middle = p.w1 * ones(1, n_unsm);
+        smoothed_side = p.w1 * linspace(0, 1, n_sm);
+    end
 
     p.Pr = [smoothed_side unsmoothed_middle flip(smoothed_side)];
 
@@ -263,7 +270,7 @@ elseif p.amp == "sech"
     end
     
     p.Pr = p.w1 * sech(p.B*(p.t-p.delta_t));
-    
+
 elseif p.amp == "custom"
     
     % Pr input by the user
@@ -418,7 +425,7 @@ if isfield(par, "amp")
             end
         end
 
-    elseif par.amp == "sinsmoothed"
+    elseif par.amp == "sinsmoothed" ||  par.amp == "linearsmoothed"
 
         if isfield(par, 'sm')
             if ~isreal(par.sm) || par.sm < 0 || par.sm > 100
@@ -444,8 +451,9 @@ if isfield(par, "amp")
         end
         
     else
-        error(['amp must be a string which must take one of the following' ...
-               ' value: WURST, superGaussian, sinsmoothed, sech, custom'])
+        error(['amp must be a string which must take one of the ' ...
+               'following values: WURST, superGaussian, sinsmoothed, ' ...
+               'linearsmoothed, sech, custom'])
     end
 end
 

@@ -14,7 +14,7 @@ catch error
 end
 
 phase = ["chirp", "tanh"];
-amp = ["superGaussian", "sinsmoothed", "WURST", "sech"];
+amp = ["superGaussian", "sinsmoothed", "linearsmoothed", "WURST", "sech"];
 
 for i = 1:length(phase)
     for j = 1:length(amp)
@@ -95,6 +95,9 @@ p_sinsmoothed_sm10 = MRchirp(par);
 par.sm = 20;
 p_sinsmoothed_sm20 = MRchirp(par);
 
+par.amp = "linearsmoothed";
+p_linearsmoothed_sm20 = MRchirp(par);
+
 par.amp = "WURST";
 p_WURST_n20 = MRchirp(par);
 par.n = 80;
@@ -106,9 +109,11 @@ par.n = 20;
 p_sG_n20 = MRchirp(par);
 
 pulses = {p_sinsmoothed_sm10 p_sinsmoothed_sm20 ...
+          p_linearsmoothed_sm20 ...
           p_WURST_n20 p_WURST_n80 ...
           p_sG_n40 p_sG_n20};
 titles = ["p_sinsmoothed_sm10" "p_sinsmoothed_sm20" ...
+          "p_linearsmoothed_sm20" ...
           "p_WURST_n20" "p_WURST_n80" ...
           "p_sG_n40" "p_sG_n20"];
 plot_pulse(pulses, "", titles);

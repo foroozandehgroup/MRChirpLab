@@ -62,7 +62,7 @@ grumble(par) % input check
 p = par;
 
 % default amplitude and phase type
-if ~isfield(p, 'amp') && ~isfield(p, 'amp')
+if ~isfield(p, 'amp') && ~isfield(p, 'phase')
     
     p.amp = "superGaussian";
     p.phase = "chirp";
